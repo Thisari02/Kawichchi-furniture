@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/50">
-          <p>© {new Date().getFullYear()} Kawichchi Furniture. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Kawichchi Furniture. All Rights Reserved. Solution by Thisari Siriwardana.</p>
           
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
