@@ -21,6 +21,20 @@ const Navbar: React.FC = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const handleNavClick = (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const targetId = href.replace('#', '');
+    const target = document.getElementById(targetId);
+
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.location.hash = href;
+    }
+
+    setIsOpen(false);
+  };
+
   return (
     <nav 
       className={`fixed w-full z-50 transition-all duration-500 ${
@@ -28,7 +42,11 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a href="#home" className="text-2xl font-serif font-bold tracking-tight text-[#2C2C2C] hover:text-[#BFA57A] transition-colors">
+        <a
+          href="#home"
+          onClick={handleNavClick('#home')}
+          className="text-2xl font-serif font-bold tracking-tight text-[#2C2C2C] hover:text-[#BFA57A] transition-colors"
+        >
           Kawichchi
         </a>
 
@@ -38,6 +56,7 @@ const Navbar: React.FC = () => {
             <a
               key={link.name}
               href={link.href}
+              onClick={handleNavClick(link.href)}
               className="text-[#2C2C2C] hover:text-[#BFA57A] transition-all duration-300 relative group text-sm font-semibold tracking-widest uppercase"
             >
               {link.name}
@@ -68,7 +87,7 @@ const Navbar: React.FC = () => {
               key={link.name}
               href={link.href}
               className="text-[#2C2C2C] hover:text-[#BFA57A] text-xl font-serif font-medium transition-colors border-b border-gray-50 pb-2"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavClick(link.href)}
             >
               {link.name}
             </a>
