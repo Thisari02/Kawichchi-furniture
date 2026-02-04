@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
+import { Instagram, Facebook, Linkedin, ArrowUp, Music } from 'lucide-react';
 
 const Footer: React.FC = () => {
   /**
@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
 
           <div className="flex gap-6">
             <a 
-              href="https://instagram.com" 
+              href="https://www.instagram.com/kawichchi/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
@@ -35,7 +35,16 @@ const Footer: React.FC = () => {
               <Instagram size={18} />
             </a>
             <a 
-              href="https://facebook.com" 
+              href="https://www.tiktok.com/@kawichchi" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
+              aria-label="Visit our TikTok"
+            >
+              <Music size={18} />
+            </a>
+            <a 
+              href="https://www.facebook.com/kawichchi" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"

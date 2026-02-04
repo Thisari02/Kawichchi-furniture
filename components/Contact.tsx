@@ -72,7 +72,7 @@ const Contact: React.FC = () => {
             </div>
 
             <a 
-              href="https://wa.me/your-number"
+              href="https://wa.me/94715505083"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#25D366] text-white py-6 px-8 rounded-sm shadow-lg flex items-center justify-center gap-4 hover:bg-[#1fb356] transition-all transform hover:-translate-y-1"

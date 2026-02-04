@@ -23,7 +23,7 @@ const Factory: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-sm uppercase tracking-widest">Location</h4>
-                  <p className="text-[#2C2C2C]/70">No. 45, Industrial Zone, Moratuwa, Sri Lanka</p>
+                  <p className="text-[#2C2C2C]/70">No. 324 De Soysa Rd, Moratuwa 10400, Sri Lanka</p>
                 </div>
               </div>
 
@@ -33,7 +33,7 @@ const Factory: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-sm uppercase tracking-widest">Phone</h4>
-                  <p className="text-[#2C2C2C]/70">+94 11 2345 678</p>
+                  <p className="text-[#2C2C2C]/70">071 550 5083</p>
                 </div>
               </div>
 
@@ -61,7 +61,7 @@ const Factory: React.FC = () => {
 
           <div className="lg:col-span-2 h-[450px] rounded-sm overflow-hidden shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15847.456637384918!2d79.882193!3d6.786317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae24578b868e88f%3A0xe54e995f92273618!2sMoratuwa%2C%20Sri%20Lanka!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus" 
+              src="https://www.google.com/maps?q=Kawichchi%20by%20Siriwardana%20(Pvt)%20Ltd%2C%20No.%20324%20De%20Soysa%20Rd%2C%20Moratuwa%2010400&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
