@@ -59,7 +59,7 @@ const Factory: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-2 h-[450px] rounded-sm overflow-hidden shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000">
+          <div className="lg:col-span-2 h-[450px] rounded-sm overflow-hidden shadow-2xl hover:shadow-xl transition-all duration-1000 md:grayscale md:hover:grayscale-0">
             <iframe 
               src="https://www.google.com/maps?q=Kawichchi%20by%20Siriwardana%20(Pvt)%20Ltd%2C%20No.%20324%20De%20Soysa%20Rd%2C%20Moratuwa%2010400&output=embed" 
               width="100%" 
