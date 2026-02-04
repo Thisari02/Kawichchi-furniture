@@ -72,17 +72,7 @@ const Footer: React.FC = () => {
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
 
-          <button 
-            onClick={scrollToTop}
-            className="flex items-center gap-2 group text-xs uppercase tracking-widest hover:text-white transition-colors focus:outline-none"
-            aria-label="Scroll back to top"
-          >
-            Back to Top 
-            <ArrowUp 
-              size={14} 
-              className="group-hover:-translate-y-1 transition-transform duration-300 ease-out" 
-            />
-          </button>
+          <span aria-hidden="true"></span>
         </div>
       </div>
     </footer>

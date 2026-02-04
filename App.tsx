@@ -10,6 +10,7 @@ import Contact from './components/Contact';
 import Factory from './components/Factory';
 import Footer from './components/Footer';
 import WhatsAppFab from './components/WhatsAppFab';
+import ScrollToTop from './components/ScrollToTop';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
       <Factory />
       <Footer />
       <WhatsAppFab />
+      <ScrollToTop />
     </main>
   );
 };
