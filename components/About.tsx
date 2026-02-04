@@ -80,7 +80,7 @@ const About: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6 lg:-ml-32 mt-[-40px] lg:mt-32 z-10 relative"
+            className="lg:col-span-5 lg:-ml-20 mt-[-40px] lg:mt-32 z-10 relative"
           >
             <div className="bg-white p-8 md:p-16 shadow-2xl rounded-sm border border-[#F5F1EA]">
               <h4 className="text-[#BFA57A] font-medium tracking-[0.4em] uppercase text-xs mb-6">Our Heritage</h4>
