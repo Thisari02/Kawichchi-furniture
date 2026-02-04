@@ -13,3 +13,17 @@ export interface Stat {
   value: number;
   suffix: string;
 }
+
+export interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  quote: string;
+  rating: number;
+}
+
+export interface InstagramPost {
+  id: number;
+  imageUrl: string;
+  alt: string;
+}
