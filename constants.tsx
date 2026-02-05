@@ -1,5 +1,5 @@
 
-import { Project, Stat, Testimonial, InstagramPost } from './types';
+import { Project, Stat, Testimonial, InstagramPost, ProcessStep, VideoShowcase } from './types';
 
 export const COLORS = {
   primary: '#2C2C2C',
@@ -12,52 +12,128 @@ export const COLORS = {
 export const PROJECTS: Project[] = [
   {
     id: 1,
-    title: 'Elegant Living Space',
+    title: 'Luxury Living Room – Colombo 7',
     category: 'Living Room',
+    location: 'Colombo 7, Sri Lanka',
+    materials: ['Grade A Teak', 'Italian Velvet', 'Brass Details'],
+    description: 'A curated seating ensemble with sculpted teak frames and velvet upholstery, designed for refined entertaining.',
     imageUrl: 'https://images.unsplash.com/photo-1583847268964-b28dc2f51ac9?q=80&w=1287&auto=format&fit=crop'
   },
   {
     id: 2,
-    title: 'Modern Minimal Bedroom',
+    title: 'Penthouse Bedroom – Rajagiriya',
     category: 'Bedroom',
+    location: 'Rajagiriya, Sri Lanka',
+    materials: ['Walnut Veneer', 'Leather Panels', 'Soft Linen'],
+    description: 'Warm walnut textures meet muted textiles to deliver a calm, hotel-grade sleep sanctuary.',
     imageUrl: 'https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=1470&auto=format&fit=crop'
   },
   {
     id: 3,
-    title: 'Executive Office Suite',
+    title: 'Executive Office – Colombo 3',
     category: 'Office',
+    location: 'Colombo 3, Sri Lanka',
+    materials: ['Smoked Oak', 'Matte Brass', 'Stone Inlay'],
+    description: 'A tailored office suite that balances authority with understated luxury for executive leadership.',
     imageUrl: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1470&auto=format&fit=crop'
   },
   {
     id: 4,
-    title: 'Custom Teak Dining Set',
+    title: 'Private Dining – Galle',
     category: 'Dining',
+    location: 'Galle, Sri Lanka',
+    materials: ['Plantation Teak', 'Natural Stone', 'Handwoven Linen'],
+    description: 'A dramatic 10-seater dining suite crafted for ocean-facing villas and intimate gatherings.',
     imageUrl: 'https://images.unsplash.com/photo-1617806118233-f8e167c4fa79?q=80&w=1632&auto=format&fit=crop'
   },
   {
     id: 5,
-    title: 'Velvet Lounge Chair',
+    title: 'Signature Lounge – Cinnamon Gardens',
     category: 'Living Room',
+    location: 'Cinnamon Gardens, Sri Lanka',
+    materials: ['Teak', 'Bouclé Fabric', 'Bronze Accents'],
+    description: 'An inviting lounge corner with sculptural forms and tactile fabrics for luxury hospitality.',
     imageUrl: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1365&auto=format&fit=crop'
   },
   {
     id: 6,
-    title: 'Master Suite Wardrobe',
+    title: 'Master Wardrobe – Talpe',
     category: 'Bedroom',
+    location: 'Talpe, Sri Lanka',
+    materials: ['American Walnut', 'Smoked Glass', 'Soft Leather'],
+    description: 'A bespoke wardrobe system engineered for seamless storage and boutique-level presentation.',
     imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef0486bc9af7?q=80&w=1287&auto=format&fit=crop'
   },
   {
     id: 7,
-    title: 'Collaborative Workspace',
+    title: 'Creative Studio – Colombo 5',
     category: 'Office',
+    location: 'Colombo 5, Sri Lanka',
+    materials: ['Ash Wood', 'Matte Steel', 'Acoustic Felt'],
+    description: 'A collaborative workspace designed for teams seeking warmth, clarity, and focus.',
     imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1469&auto=format&fit=crop'
   },
   {
     id: 8,
-    title: 'Artisan Breakfast Nook',
+    title: 'Artisan Breakfast Lounge – Kandy',
     category: 'Dining',
+    location: 'Kandy, Sri Lanka',
+    materials: ['Teak', 'Marble', 'Handwoven Rattan'],
+    description: 'A sunlit breakfast lounge with handcrafted textures for boutique residences.',
     imageUrl: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1469&auto=format&fit=crop'
   }
+];
+
+export const PROCESS_STEPS: ProcessStep[] = [
+  {
+    id: 1,
+    title: 'Design Consultation',
+    description: 'We translate your vision into tailored spatial concepts and refined material palettes.',
+    image: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=1200&auto=format&fit=crop',
+    icon: 'Compass',
+  },
+  {
+    id: 2,
+    title: 'Wood Selection',
+    description: 'Every timber slab is personally curated for grain, tone, and structural integrity.',
+    image: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop',
+    icon: 'Trees',
+  },
+  {
+    id: 3,
+    title: 'Master Production',
+    description: 'Skilled artisans craft, assemble, and finish each detail with uncompromising precision.',
+    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+    icon: 'Hammer',
+  },
+  {
+    id: 4,
+    title: 'White-Glove Delivery',
+    description: 'Installation, styling, and care instructions delivered with luxury hospitality standards.',
+    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+    icon: 'Truck',
+  },
+];
+
+export const VIDEO_SHOWCASE: VideoShowcase[] = [
+  {
+    id: 1,
+    title: 'Workshop Tour: Craft in Motion',
+    tag: 'Factory',
+    thumbnail: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    id: 2,
+    title: 'From Timber to Masterpiece',
+    tag: 'Craft',
+    thumbnail: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    id: 3,
+    title: 'Luxury Finishing Atelier',
+    tag: 'Finishing',
+    thumbnail: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1600&auto=format&fit=crop',
+  },
 ];
 
 export const STATS: Stat[] = [

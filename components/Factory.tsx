@@ -2,17 +2,42 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
+const workshopImages = [
+  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1465101162946-4377e57745c3?q=80&w=1200&auto=format&fit=crop',
+];
+
 const Factory: React.FC = () => {
   return (
-    <section className="py-24 px-6 bg-white">
+    <section id="factory" className="py-24 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-serif mb-4">Workshop Transparency</h2>
+          <p className="text-[#2C2C2C]/70 max-w-3xl mx-auto leading-relaxed">
+            Step inside our Moratuwa production floor where master artisans craft every joint, veneer, and finish with uncompromising precision.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {workshopImages.map((image, index) => (
+            <div key={index} className="relative aspect-[4/5] overflow-hidden rounded-sm shadow-xl">
+              <img
+                src={image}
+                alt="Kawichchi workshop"
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
           <div className="lg:col-span-1 space-y-8">
             <div>
-              <h2 className="text-4xl font-serif mb-6">Our Factory</h2>
-              <p className="text-[#2C2C2C]/70 mb-8 leading-relaxed">
-                Visit our state-of-the-art production facility where craftsmanship meets technology. Witness the creation of your furniture firsthand.
+              <h3 className="text-3xl font-serif mb-4">Moratuwa Production Atelier</h3>
+              <p className="text-[#2C2C2C]/70 leading-relaxed">
+                From raw timber to polished masterpiece, each stage is documented, inspected, and refined by our in-house specialists.
               </p>
             </div>
 
@@ -70,7 +95,6 @@ const Factory: React.FC = () => {
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
-
         </div>
       </div>
     </section>

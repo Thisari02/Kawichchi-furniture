@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Layers } from 'lucide-react';
 import { PROJECTS } from '../constants';
 import { Category } from '../types';
 
@@ -46,7 +47,7 @@ const Projects: React.FC = () => {
 
       <motion.div 
         layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
       >
         <AnimatePresence mode='popLayout'>
           {filteredProjects.map((project) => (
@@ -57,17 +58,38 @@ const Projects: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.5 }}
-              className="group relative aspect-square overflow-hidden cursor-pointer rounded-sm"
+              className="group relative overflow-hidden cursor-pointer rounded-sm bg-[#F5F1EA]"
             >
-              <img 
-                src={project.imageUrl} 
-                alt={project.title} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6">
-                <p className="text-[#BFA57A] text-xs uppercase tracking-[0.2em] mb-2">{project.category}</p>
-                <h3 className="text-white text-xl font-serif text-center">{project.title}</h3>
-                <div className="mt-4 w-10 h-0.5 bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+              <div className="relative h-[420px] overflow-hidden">
+                <img 
+                  src={project.imageUrl} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:blur-[2px]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 opacity-90 transition-opacity duration-500" />
+                <div className="absolute inset-0 flex flex-col justify-end p-8">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#BFA57A] mb-4">
+                    <MapPin size={14} />
+                    <span>{project.location}</span>
+                  </div>
+                  <h3 className="text-white text-2xl font-serif mb-3">{project.title}</h3>
+                  <p className="text-white/80 text-sm leading-relaxed mb-4">
+                    {project.description}
+                  </p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/70">
+                      <Layers size={12} /> Materials
+                    </span>
+                    {project.materials.map((material) => (
+                      <span
+                        key={material}
+                        className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] bg-white/10 text-white/80 border border-white/20"
+                      >
+                        {material}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}

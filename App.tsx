@@ -3,9 +3,10 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Craftsmanship from './components/Craftsmanship';
 import Projects from './components/Projects';
+import VideoShowcase from './components/VideoShowcase';
 import Testimonials from './components/Testimonials';
-import InstagramGallery from './components/InstagramGallery';
 import Contact from './components/Contact';
 import Factory from './components/Factory';
 import Footer from './components/Footer';
@@ -18,9 +19,10 @@ const App: React.FC = () => {
       <Navbar />
       <Hero />
       <About />
+      <Craftsmanship />
       <Projects />
+      <VideoShowcase />
       <Testimonials />
-      <InstagramGallery />
       <Contact />
       <Factory />
       <Footer />

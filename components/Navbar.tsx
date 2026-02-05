@@ -17,8 +17,11 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
+    { name: 'Craftsmanship', href: '#craftsmanship' },
     { name: 'Projects', href: '#projects' },
+    { name: 'Showcase', href: '#showcase' },
     { name: 'Contact', href: '#contact' },
+    { name: 'Workshop', href: '#factory' },
   ];
 
   const handleNavClick = (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -78,7 +81,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <div 
         className={`absolute top-full left-0 w-full bg-white transition-all duration-500 ease-in-out overflow-hidden md:hidden shadow-2xl border-t border-[#F5F1EA] ${
-          isOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[480px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <div className="flex flex-col py-8 px-6 space-y-6">
