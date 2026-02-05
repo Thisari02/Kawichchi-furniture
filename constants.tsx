@@ -61,9 +61,9 @@ export const PROJECTS: Project[] = [
 ];
 
 export const STATS: Stat[] = [
-  { label: 'Years of Experience', value: 25, suffix: '+' },
-  { label: 'Projects Completed', value: 1200, suffix: '+' },
-  { label: 'Happy Clients', value: 850, suffix: '' },
+  { label: 'Years of Experience', value: 20, suffix: '+' },
+  { label: 'Projects Completed', value: 1500, suffix: '+' },
+  { label: 'Happy Clients', value: 500, suffix: '' },
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
