@@ -1,18 +1,61 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Layers } from 'lucide-react';
 import { PROJECTS } from '../constants';
-import { Category } from '../types';
+import { fetchProjects } from '../lib/projectApi';
+import { Category, Project } from '../types';
 
 const categories: Category[] = ['All', 'Living Room', 'Bedroom', 'Office', 'Dining'];
 
 const Projects: React.FC = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<Category>('All');
+  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [loading, setLoading] = useState(true);
 
-  const filteredProjects = PROJECTS.filter(p => 
+  useEffect(() => {
+    let mounted = true;
+
+    fetchProjects()
+      .then((data) => {
+        if (!mounted) return;
+        setProjects(data);
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filteredProjects = projects.filter((p) =>
     activeCategory === 'All' ? true : p.category === activeCategory
   );
+
+
+  if (loading) {
+    return (
+      <section id="projects" className="py-24 px-6 bg-white">
+        <div className="max-w-7xl mx-auto text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-serif mb-4"
+          >
+            Our Projects
+          </motion.h2>
+          <div className="w-24 h-1 bg-[#BFA57A] mx-auto mb-10"></div>
+          <p className="text-[#2C2C2C]/70">Loading projects…</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-24 px-6 bg-white">
@@ -58,6 +101,7 @@ const Projects: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.5 }}
+              onClick={() => navigate(`/projects/${project.id}`)}
               className="group relative overflow-hidden cursor-pointer rounded-sm bg-[#F5F1EA]"
             >
               <div className="relative h-[420px] overflow-hidden">

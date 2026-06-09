@@ -9,6 +9,7 @@ export interface Project {
   materials: string[];
   description: string;
   imageUrl: string;
+  portfolio?: string[];
 }
 
 export interface Stat {

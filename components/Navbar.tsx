@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,28 +17,16 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Craftsmanship', href: '#craftsmanship' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Showcase', href: '#showcase' },
-    { name: 'Contact', href: '#contact' },
-    { name: 'Workshop', href: '#factory' },
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Craftsmanship', path: '/craftsmanship' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Showcase', path: '/showcase' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Workshop', path: '/workshop' },
   ];
 
-  const handleNavClick = (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    const targetId = href.replace('#', '');
-    const target = document.getElementById(targetId);
-
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.location.hash = href;
-    }
-
-    setIsOpen(false);
-  };
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <nav 
@@ -45,26 +35,31 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a
-          href="#home"
-          onClick={handleNavClick('#home')}
+        <Link
+          to="/"
           className="text-2xl font-serif font-bold tracking-tight text-[#2C2C2C] hover:text-[#BFA57A] transition-colors"
         >
           Kawichchi
-        </a>
+        </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-10">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
-              onClick={handleNavClick(link.href)}
-              className="text-[#2C2C2C] hover:text-[#BFA57A] transition-all duration-300 relative group text-sm font-semibold tracking-widest uppercase"
+              to={link.path}
+              onClick={() => setIsOpen(false)}
+              className={`transition-all duration-300 relative group text-sm font-semibold tracking-widest uppercase ${
+                isActive(link.path)
+                  ? 'text-[#BFA57A]'
+                  : 'text-[#2C2C2C] hover:text-[#BFA57A]'
+              }`}
             >
               {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#BFA57A] transition-all duration-300 group-hover:w-full"></span>
-            </a>
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#BFA57A] transition-all duration-300 ${
+                isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
           ))}
         </div>
 
@@ -86,14 +81,18 @@ const Navbar: React.FC = () => {
       >
         <div className="flex flex-col py-8 px-6 space-y-6">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
-              className="text-[#2C2C2C] hover:text-[#BFA57A] text-xl font-serif font-medium transition-colors border-b border-gray-50 pb-2"
-              onClick={handleNavClick(link.href)}
+              to={link.path}
+              onClick={() => setIsOpen(false)}
+              className={`text-xl font-serif font-medium transition-colors border-b border-gray-50 pb-2 ${
+                isActive(link.path)
+                  ? 'text-[#BFA57A]'
+                  : 'text-[#2C2C2C] hover:text-[#BFA57A]'
+              }`}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
