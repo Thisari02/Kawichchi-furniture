@@ -32,13 +32,13 @@ const Hero: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <a 
               href="#projects"
-              className="px-10 py-5 bg-[#BFA57A] text-white font-bold tracking-[0.2em] hover:bg-[#2C2C2C] transition-all duration-500 transform hover:-translate-y-2 shadow-2xl uppercase text-sm"
+              className="px-10 py-5 bg-[#D4AF37] text-black font-bold tracking-[0.2em] hover:bg-[#F5D547] transition-all duration-500 transform hover:-translate-y-2 shadow-2xl uppercase text-sm"
             >
               VIEW PROJECTS
             </a>
             <a 
               href="#contact"
-              className="px-10 py-5 border-2 border-white text-white font-bold tracking-[0.2em] hover:bg-white hover:text-[#2C2C2C] transition-all duration-500 transform hover:-translate-y-2 uppercase text-sm"
+              className="px-10 py-5 border-2 border-[#D4AF37] text-[#D4AF37] font-bold tracking-[0.2em] hover:bg-[#D4AF37] hover:text-black transition-all duration-500 transform hover:-translate-y-2 uppercase text-sm"
             >
               CONTACT US
             </a>

@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
               href="https://www.instagram.com/kawichchi/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] transition-all duration-300"
               aria-label="Visit our Instagram"
             >
               <Instagram size={18} />
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
               href="https://www.tiktok.com/@kawichchi" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] transition-all duration-300"
               aria-label="Visit our TikTok"
             >
               <Music size={18} />
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
               href="https://www.facebook.com/kawichchi" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] transition-all duration-300"
               aria-label="Visit our Facebook"
             >
               <Facebook size={18} />
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
               href="https://linkedin.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#BFA57A] hover:border-[#BFA57A] transition-all duration-300"
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] transition-all duration-300"
               aria-label="Visit our LinkedIn"
             >
               <Linkedin size={18} />

@@ -31,15 +31,22 @@ const Navbar: React.FC = () => {
   return (
     <nav 
       className={`fixed w-full z-50 transition-all duration-500 ${
-        scrolled ? 'bg-white/95 backdrop-blur-md py-4 shadow-md' : 'bg-transparent py-6'
+        scrolled ? 'bg-white/95 backdrop-blur-md py-3 shadow-md' : 'bg-transparent py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <Link
           to="/"
-          className="text-2xl font-serif font-bold tracking-tight text-[#2C2C2C] hover:text-[#BFA57A] transition-colors"
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          Kawichchi
+          <img 
+            src="/images/logo.jpeg" 
+            alt="Kawichchi Logo" 
+            className="h-12 w-12 object-contain"
+          />
+          <span className="text-xl font-serif font-bold tracking-tight text-[#D4AF37] hidden sm:inline hover:text-[#F5D547] transition-colors">
+            Kawichchi
+          </span>
         </Link>
 
         {/* Desktop Menu */}
@@ -51,12 +58,12 @@ const Navbar: React.FC = () => {
               onClick={() => setIsOpen(false)}
               className={`transition-all duration-300 relative group text-sm font-semibold tracking-widest uppercase ${
                 isActive(link.path)
-                  ? 'text-[#BFA57A]'
-                  : 'text-[#2C2C2C] hover:text-[#BFA57A]'
+                  ? 'text-[#D4AF37]'
+                  : 'text-[#2C2C2C] hover:text-[#D4AF37]'
               }`}
             >
               {link.name}
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#BFA57A] transition-all duration-300 ${
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#D4AF37] transition-all duration-300 ${
                 isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
               }`}></span>
             </Link>
@@ -65,7 +72,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Toggle */}
         <button 
-          className="md:hidden text-[#2C2C2C] p-2 hover:bg-[#F5F1EA] rounded-full transition-colors"
+          className="md:hidden text-[#D4AF37] p-2 hover:bg-[#F5F1EA] rounded-full transition-colors"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle Menu"
         >
@@ -87,8 +94,8 @@ const Navbar: React.FC = () => {
               onClick={() => setIsOpen(false)}
               className={`text-xl font-serif font-medium transition-colors border-b border-gray-50 pb-2 ${
                 isActive(link.path)
-                  ? 'text-[#BFA57A]'
-                  : 'text-[#2C2C2C] hover:text-[#BFA57A]'
+                  ? 'text-[#D4AF37]'
+                  : 'text-[#2C2C2C] hover:text-[#D4AF37]'
               }`}
             >
               {link.name}

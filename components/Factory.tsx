@@ -43,7 +43,7 @@ const Factory: React.FC = () => {
 
             <div className="space-y-6">
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#BFA57A]/10 flex items-center justify-center text-[#BFA57A] flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
                   <MapPin size={20} />
                 </div>
                 <div>
@@ -53,7 +53,7 @@ const Factory: React.FC = () => {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#BFA57A]/10 flex items-center justify-center text-[#BFA57A] flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
                   <Phone size={20} />
                 </div>
                 <div>
@@ -63,7 +63,7 @@ const Factory: React.FC = () => {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#BFA57A]/10 flex items-center justify-center text-[#BFA57A] flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
                   <Mail size={20} />
                 </div>
                 <div>
@@ -73,7 +73,7 @@ const Factory: React.FC = () => {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#BFA57A]/10 flex items-center justify-center text-[#BFA57A] flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
                   <Clock size={20} />
                 </div>
                 <div>

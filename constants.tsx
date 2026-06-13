@@ -4,7 +4,7 @@ import { Project, Stat, Testimonial, InstagramPost, ProcessStep, VideoShowcase }
 export const COLORS = {
   primary: '#2C2C2C',
   background: '#F5F1EA',
-  accent: '#BFA57A',
+  accent: '#D4AF37',
   whatsapp: '#25D366',
   white: '#FFFFFF',
 };

@@ -31,7 +31,7 @@ const Counter: React.FC<{ value: number; suffix: string; label: string }> = ({ v
 
   return (
     <div ref={ref} className="flex flex-col">
-      <div className="text-3xl md:text-4xl font-serif font-bold text-[#BFA57A]">
+      <div className="text-3xl md:text-4xl font-serif font-bold text-[#D4AF37]">
         {count.toLocaleString()}{suffix}
       </div>
       <div className="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mt-1">
@@ -83,7 +83,7 @@ const About: React.FC = () => {
             className="lg:col-span-5 lg:-ml-20 mt-[-40px] lg:mt-32 z-10 relative"
           >
             <div className="bg-white p-8 md:p-16 shadow-2xl rounded-sm border border-[#F5F1EA]">
-              <h4 className="text-[#BFA57A] font-medium tracking-[0.4em] uppercase text-xs mb-6">Our Heritage</h4>
+              <h4 className="text-[#D4AF37] font-medium tracking-[0.4em] uppercase text-xs mb-6">Our Heritage</h4>
               <h2 className="text-4xl md:text-6xl font-serif mb-8 leading-tight">About Kawichchi</h2>
               <p className="italic text-xl text-[#2C2C2C]/70 mb-10 font-serif leading-relaxed">
                 "We don't just build furniture; we curate the soul of your living space."

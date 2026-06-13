@@ -11,7 +11,7 @@ const Testimonials: React.FC = () => {
           <p className="text-[#2C2C2C]/60 max-w-2xl mx-auto">
             Premium craftsmanship trusted by discerning homeowners, architects, and hospitality brands.
           </p>
-          <div className="w-24 h-1 bg-[#BFA57A] mx-auto mt-8"></div>
+          <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-8"></div>
         </div>
 
         <motion.div
@@ -33,7 +33,7 @@ const Testimonials: React.FC = () => {
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
               className="bg-white rounded-sm shadow-lg p-6 flex flex-col gap-4"
             >
-              <div className="flex gap-1 text-[#BFA57A]">
+              <div className="flex gap-1 text-[#D4AF37]">
                 {Array.from({ length: testimonial.rating }).map((_, index) => (
                   <span key={index} aria-hidden>
                     ★

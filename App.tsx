@@ -33,7 +33,7 @@ const HomePage: React.FC = () => (
 const App: React.FC = () => {
   return (
     <Router>
-      <main className="min-h-screen selection:bg-[#BFA57A] selection:text-white">
+      <main className="min-h-screen selection:bg-[#D4AF37] selection:text-white">
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />

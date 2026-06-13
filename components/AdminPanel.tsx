@@ -15,6 +15,10 @@ const AdminPanel: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [useFileUpload, setUseFileUpload] = useState(false);
+  const [portfolioPreviews, setPortfolioPreviews] = useState<string[]>([]);
+  const [usePortfolioFileUpload, setUsePortfolioFileUpload] = useState(false);
   const [formData, setFormData] = useState<Partial<Project>>({
     id: 0,
     title: '',
@@ -49,12 +53,20 @@ const AdminPanel: React.FC = () => {
       portfolio: [],
     });
     setEditingId(null);
+    setImagePreview(null);
+    setUseFileUpload(false);
+    setPortfolioPreviews([]);
+    setUsePortfolioFileUpload(false);
     setShowForm(true);
   };
 
   const handleEditClick = (project: Project) => {
     setFormData(project);
     setEditingId(project.id);
+    setImagePreview(project.imageUrl || null);
+    setUseFileUpload(false);
+    setPortfolioPreviews(project.portfolio || []);
+    setUsePortfolioFileUpload(false);
     setShowForm(true);
   };
 
@@ -107,6 +119,78 @@ const AdminPanel: React.FC = () => {
     }));
   };
 
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        setError(`Image file is too large. Maximum size is 5MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        setImagePreview(base64String);
+        handleFieldChange('imageUrl', base64String);
+        setError(null); // Clear any previous errors
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const clearImageUpload = () => {
+    setImagePreview(null);
+    handleFieldChange('imageUrl', '');
+    setUseFileUpload(false);
+  };
+
+  const handlePortfolioFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate total file size (max 50MB total for all portfolio images)
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    const maxTotalSize = 50 * 1024 * 1024; // 50MB
+    if (totalSize > maxTotalSize) {
+      setError(`Portfolio images are too large. Maximum total size is 50MB. Your files are ${(totalSize / (1024 * 1024)).toFixed(2)}MB`);
+      return;
+    }
+
+    // Process each file
+    let processedCount = 0;
+    const newPreviews: string[] = [...portfolioPreviews];
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        newPreviews.push(base64String);
+        processedCount++;
+
+        if (processedCount === files.length) {
+          setPortfolioPreviews(newPreviews);
+          handleFieldChange('portfolio', newPreviews);
+          setError(null); // Clear any previous errors
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removePortfolioImage = (index: number) => {
+    const updated = portfolioPreviews.filter((_, i) => i !== index);
+    setPortfolioPreviews(updated);
+    handleFieldChange('portfolio', updated);
+  };
+
+  const clearPortfolioUpload = () => {
+    setPortfolioPreviews([]);
+    handleFieldChange('portfolio', []);
+    setUsePortfolioFileUpload(false);
+  };
+
   if (loading) {
     return (
       <section className="py-24 px-6 bg-white min-h-screen">
@@ -123,7 +207,7 @@ const AdminPanel: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-4xl font-serif mb-2">Admin Panel</h1>
-          <div className="w-24 h-1 bg-[#BFA57A] mb-8"></div>
+          <div className="w-24 h-1 bg-[#D4AF37] mb-8"></div>
 
           {error && (
             <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -159,7 +243,7 @@ const AdminPanel: React.FC = () => {
                     value={formData.id || ''}
                     onChange={(e) => handleFieldChange('id', parseInt(e.target.value))}
                     disabled={!!editingId}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded bg-white disabled:bg-gray-100"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded bg-white disabled:bg-gray-100"
                   />
                 </div>
 
@@ -172,7 +256,7 @@ const AdminPanel: React.FC = () => {
                     type="text"
                     value={formData.title || ''}
                     onChange={(e) => handleFieldChange('title', e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                     placeholder="Project title"
                   />
                 </div>
@@ -185,7 +269,7 @@ const AdminPanel: React.FC = () => {
                   <select
                     value={formData.category || 'Living Room'}
                     onChange={(e) => handleFieldChange('category', e.target.value as Category)}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                   >
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
@@ -204,21 +288,73 @@ const AdminPanel: React.FC = () => {
                     type="text"
                     value={formData.location || ''}
                     onChange={(e) => handleFieldChange('location', e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                     placeholder="e.g., Colombo 7, Sri Lanka"
                   />
                 </div>
 
-                {/* Image URL */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Image URL</label>
-                  <input
-                    type="url"
-                    value={formData.imageUrl || ''}
-                    onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
-                    placeholder="https://..."
-                  />
+                {/* Image */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold mb-2">Image</label>
+                  <div className="flex gap-4 mb-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={!useFileUpload}
+                        onChange={() => setUseFileUpload(false)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">URL</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={useFileUpload}
+                        onChange={() => setUseFileUpload(true)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Upload Image</span>
+                    </label>
+                  </div>
+
+                  {!useFileUpload ? (
+                    <input
+                      type="url"
+                      value={formData.imageUrl || ''}
+                      onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
+                      className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
+                      placeholder="https://..."
+                    />
+                  ) : (
+                    <div className="space-y-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileChange}
+                        className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded cursor-pointer file:bg-[#D4AF37] file:text-white file:border-0 file:rounded file:px-4 file:py-2 file:cursor-pointer file:hover:bg-[#F5D547]"
+                      />
+                      {imagePreview && (
+                        <div className="relative inline-block">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="max-w-xs h-40 object-cover rounded border border-[#D4AF37]/30"
+                          />
+                          <button
+                            type="button"
+                            onClick={clearImageUpload}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {imagePreview && (
+                    <p className="text-xs text-green-600 mt-2">✓ Image selected</p>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -227,7 +363,7 @@ const AdminPanel: React.FC = () => {
                   <textarea
                     value={formData.description || ''}
                     onChange={(e) => handleFieldChange('description', e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                     placeholder="Project description"
                     rows={3}
                   />
@@ -244,25 +380,86 @@ const AdminPanel: React.FC = () => {
                     onChange={(e) =>
                       handleFieldChange('materials', e.target.value.split(',').map((m) => m.trim()))
                     }
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded"
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                     placeholder="Teak, Italian Velvet, Brass Details"
                   />
                 </div>
 
-                {/* Portfolio URLs */}
+                {/* Portfolio Images */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold mb-2">
-                    Portfolio Images (one URL per line)
-                  </label>
-                  <textarea
-                    value={(formData.portfolio || []).join('\n')}
-                    onChange={(e) =>
-                      handleFieldChange('portfolio', e.target.value.split('\n').filter((u) => u.trim()))
-                    }
-                    className="w-full px-3 py-2 border border-[#BFA57A]/30 rounded font-mono text-xs"
-                    placeholder="https://image1.jpg&#10;https://image2.jpg"
-                    rows={3}
-                  />
+                  <label className="block text-sm font-semibold mb-2">Portfolio Images</label>
+                  <div className="flex gap-4 mb-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={!usePortfolioFileUpload}
+                        onChange={() => setUsePortfolioFileUpload(false)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">URLs (one per line)</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={usePortfolioFileUpload}
+                        onChange={() => setUsePortfolioFileUpload(true)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Upload Images</span>
+                    </label>
+                  </div>
+
+                  {!usePortfolioFileUpload ? (
+                    <textarea
+                      value={(formData.portfolio || []).join('\n')}
+                      onChange={(e) =>
+                        handleFieldChange('portfolio', e.target.value.split('\n').filter((u) => u.trim()))
+                      }
+                      className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded font-mono text-xs"
+                      placeholder="https://image1.jpg&#10;https://image2.jpg"
+                      rows={3}
+                    />
+                  ) : (
+                    <div className="space-y-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handlePortfolioFileChange}
+                        className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded cursor-pointer file:bg-[#D4AF37] file:text-white file:border-0 file:rounded file:px-4 file:py-2 file:cursor-pointer file:hover:bg-[#F5D547]"
+                      />
+                      {portfolioPreviews.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-xs text-green-600">✓ {portfolioPreviews.length} image(s) selected</p>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {portfolioPreviews.map((preview, index) => (
+                              <div key={index} className="relative">
+                                <img
+                                  src={preview}
+                                  alt={`Portfolio ${index + 1}`}
+                                  className="w-full h-20 object-cover rounded border border-[#D4AF37]/30"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removePortfolioImage(index)}
+                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={clearPortfolioUpload}
+                            className="text-xs text-red-600 hover:text-red-700 mt-2"
+                          >
+                            Clear all
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -278,7 +475,7 @@ const AdminPanel: React.FC = () => {
                 <button
                   onClick={() => setShowForm(false)}
                   disabled={saving}
-                  className="px-6 py-2 border border-[#BFA57A]/30 rounded hover:bg-[#F5F1EA]"
+                  className="px-6 py-2 border border-[#D4AF37]/30 rounded hover:bg-[#F5F1EA]"
                 >
                   Cancel
                 </button>

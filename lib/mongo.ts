@@ -7,10 +7,19 @@ const options: MongoClientOptions = {
 };
 
 const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error('Missing MONGODB_URI environment variable');
+
+let client: MongoClient | null = null;
+
+if (uri) {
+  try {
+    client = new MongoClient(uri, options);
+    attachDatabasePool(client);
+  } catch (error) {
+    console.warn('Failed to initialize MongoDB client:', error);
+    client = null;
+  }
+} else {
+  console.warn('MONGODB_URI not configured, MongoDB features will be disabled');
 }
 
-const client = new MongoClient(uri, options);
-attachDatabasePool(client);
 export default client;

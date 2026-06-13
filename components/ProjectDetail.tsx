@@ -56,7 +56,7 @@ const ProjectDetail: React.FC = () => {
           <h2 className="text-2xl font-serif mb-4">Project not found</h2>
           <button
             onClick={() => navigate('/projects')}
-            className="px-6 py-2 bg-[#BFA57A] text-white hover:bg-[#A98960] transition-colors"
+            className="px-6 py-2 bg-[#D4AF37] text-black hover:bg-[#F5D547] transition-colors"
           >
             Back to Projects
           </button>
@@ -95,14 +95,14 @@ const ProjectDetail: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#BFA57A] mb-4">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#D4AF37] mb-4">
               <MapPin size={16} />
               <span>{project.location}</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-serif text-[#2C2C2C] mb-4">
               {project.title}
             </h1>
-            <div className="w-16 h-1 bg-[#BFA57A] mb-8"></div>
+            <div className="w-16 h-1 bg-[#D4AF37] mb-8"></div>
           </motion.div>
 
           {/* Description */}
@@ -122,14 +122,14 @@ const ProjectDetail: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="grid md:grid-cols-2 gap-12 py-12 border-t border-b border-[#BFA57A]/20"
+            className="grid md:grid-cols-2 gap-12 py-12 border-t border-b border-[#D4AF37]/20"
           >
             {/* Category */}
             <div>
               <h3 className="text-sm uppercase tracking-[0.3em] text-[#2C2C2C] mb-4 font-semibold">
                 Category
               </h3>
-              <p className="text-xl text-[#BFA57A] font-serif">{project.category}</p>
+              <p className="text-xl text-[#D4AF37] font-serif">{project.category}</p>
             </div>
 
             {/* Materials */}
@@ -142,7 +142,7 @@ const ProjectDetail: React.FC = () => {
                 {project.materials.map((material) => (
                   <span
                     key={material}
-                    className="px-4 py-2 text-sm uppercase tracking-[0.2em] bg-[#F5F1EA] text-[#2C2C2C] border border-[#BFA57A]/30 hover:border-[#BFA57A] transition-colors"
+                    className="px-4 py-2 text-sm uppercase tracking-[0.2em] bg-[#F5F1EA] text-[#2C2C2C] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-colors"
                   >
                     {material}
                   </span>
@@ -227,7 +227,7 @@ const ProjectDetail: React.FC = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
-                  <h3 className="text-lg font-serif text-[#2C2C2C] group-hover:text-[#BFA57A] transition-colors">
+                  <h3 className="text-lg font-serif text-[#2C2C2C] group-hover:text-[#D4AF37] transition-colors">
                     {relatedProject.title}
                   </h3>
                   <p className="text-sm text-[#2C2C2C]/60 mt-2">{relatedProject.location}</p>

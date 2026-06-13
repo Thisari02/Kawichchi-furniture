@@ -1,42 +1,110 @@
-import client from './mongo';
 import type { Project } from '../types';
+import { PROJECTS } from '../constants';
 
+// Use in-memory storage for development
+let projectsData = [...PROJECTS];
+
+// MongoDB client - will be null if not available
+let client: any = null;
+if (process.env.MONGODB_URI) {
+  try {
+    const mongoModule = await import('./mongo');
+    if (mongoModule.default) {
+      client = mongoModule.default;
+    }
+  } catch (error) {
+    console.warn('MongoDB not available, using in-memory storage');
+  }
+}
+
+const useMemoryStorage = !client;
 const DATABASE_NAME = process.env.MONGODB_DB_NAME || 'kawichchi';
 const COLLECTION_NAME = 'projects';
 
 export async function getProjects(): Promise<Project[]> {
-  await client.connect();
-  const db = client.db(DATABASE_NAME);
-  return db.collection<Project>(COLLECTION_NAME).find().toArray();
+  if (useMemoryStorage) {
+    return projectsData;
+  }
+  try {
+    await client.connect();
+    const db = client.db(DATABASE_NAME);
+    return db.collection<Project>(COLLECTION_NAME).find().toArray();
+  } catch (error) {
+    console.warn('Failed to fetch from MongoDB, using in-memory data:', error);
+    return projectsData;
+  }
 }
 
 export async function getProjectById(id: string | number): Promise<Project | null> {
-  await client.connect();
-  const db = client.db(DATABASE_NAME);
-  return db.collection<Project>(COLLECTION_NAME).findOne({ id: Number(id) });
+  if (useMemoryStorage) {
+    return projectsData.find(p => p.id === Number(id)) || null;
+  }
+  try {
+    await client.connect();
+    const db = client.db(DATABASE_NAME);
+    return db.collection<Project>(COLLECTION_NAME).findOne({ id: Number(id) });
+  } catch (error) {
+    console.warn('Failed to fetch from MongoDB:', error);
+    return projectsData.find(p => p.id === Number(id)) || null;
+  }
 }
 
 export async function addProject(project: Project): Promise<Project> {
-  await client.connect();
-  const db = client.db(DATABASE_NAME);
-  await db.collection<Project>(COLLECTION_NAME).insertOne(project);
-  return project;
+  if (useMemoryStorage) {
+    projectsData.push(project);
+    return project;
+  }
+  try {
+    await client.connect();
+    const db = client.db(DATABASE_NAME);
+    await db.collection<Project>(COLLECTION_NAME).insertOne(project);
+    return project;
+  } catch (error) {
+    console.warn('Failed to save to MongoDB, storing in memory:', error);
+    projectsData.push(project);
+    return project;
+  }
 }
 
 export async function updateProject(id: number, project: Partial<Project>): Promise<Project | null> {
-  await client.connect();
-  const db = client.db(DATABASE_NAME);
-  const { _id, ...updateFields } = project as any;
-  const result = (await db.collection<Project>(COLLECTION_NAME).findOneAndUpdate(
-    { id },
-    { $set: updateFields },
-    { returnDocument: 'after' }
-  )) as any;
-  return result?.value ?? null;
+  if (useMemoryStorage) {
+    const index = projectsData.findIndex(p => p.id === id);
+    if (index === -1) return null;
+    const updated = { ...projectsData[index], ...project, id };
+    projectsData[index] = updated;
+    return updated;
+  }
+  try {
+    await client.connect();
+    const db = client.db(DATABASE_NAME);
+    const { _id, ...updateFields } = project as any;
+    const result = (await db.collection<Project>(COLLECTION_NAME).findOneAndUpdate(
+      { id },
+      { $set: updateFields },
+      { returnDocument: 'after' }
+    )) as any;
+    return result?.value ?? null;
+  } catch (error) {
+    console.warn('Failed to update in MongoDB, updating in memory:', error);
+    const index = projectsData.findIndex(p => p.id === id);
+    if (index === -1) return null;
+    const updated = { ...projectsData[index], ...project, id };
+    projectsData[index] = updated;
+    return updated;
+  }
 }
 
 export async function deleteProject(id: number): Promise<void> {
-  await client.connect();
-  const db = client.db(DATABASE_NAME);
-  await db.collection<Project>(COLLECTION_NAME).deleteOne({ id });
+  if (useMemoryStorage) {
+    projectsData = projectsData.filter(p => p.id !== id);
+    return;
+  }
+  try {
+    await client.connect();
+    const db = client.db(DATABASE_NAME);
+    await db.collection<Project>(COLLECTION_NAME).deleteOne({ id });
+  } catch (error) {
+    console.warn('Failed to delete from MongoDB, deleting from memory:', error);
+    projectsData = projectsData.filter(p => p.id !== id);
+  }
 }
