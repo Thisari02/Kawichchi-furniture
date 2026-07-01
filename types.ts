@@ -2,6 +2,7 @@
 export type Category = 'All' | 'Living Room' | 'Bedroom' | 'Office' | 'Dining';
 
 export interface Project {
+  _id?: string;
   id: number;
   title: string;
   category: Category;

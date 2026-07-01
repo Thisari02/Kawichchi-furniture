@@ -14,8 +14,8 @@ const ProjectDetail: React.FC = () => {
 
   useEffect(() => {
     let canceled = false;
-    const projectId = Number(id);
-
+    const projectId = String(id);
+    console.log('Fetching project with ID:', projectId);
     if (!projectId) {
       setProject(null);
       setLoading(false);
@@ -24,6 +24,7 @@ const ProjectDetail: React.FC = () => {
 
     fetchProjectById(projectId)
       .then((data) => {
+        console.log('Fetched project data:', data);
         if (!canceled) {
           setProject(data);
         }

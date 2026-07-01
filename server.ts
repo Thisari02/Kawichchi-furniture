@@ -10,8 +10,8 @@ const { getProjects, getProjectById, addProject, updateProject, deleteProject } 
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 app.get('/api/projects', async (req, res) => {
   try {
@@ -46,7 +46,7 @@ app.post('/api/admin/projects', async (req, res) => {
     return res.status(201).json(createdProject);
   } catch (error) {
     console.error('Error creating project:', error);
-    return res.status(500).json({ error: 'Failed to create project' });
+    return res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to create project' });
   }
 });
 
@@ -63,7 +63,7 @@ app.put('/api/admin/projects/:id', async (req, res) => {
     return res.status(200).json(updated);
   } catch (error) {
     console.error('Error updating project:', error);
-    return res.status(500).json({ error: 'Failed to update project' });
+    return res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to update project' });
   }
 });
 

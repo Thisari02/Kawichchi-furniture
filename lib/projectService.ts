@@ -1,6 +1,15 @@
 import type { Project } from '../types';
 import { PROJECTS } from '../constants';
 
+function normalizeProject(project: any): Project {
+  if (!project) return project;
+  const { _id, ...rest } = project;
+  return {
+    ...rest,
+    _id: _id?.toString?.() ?? undefined,
+  };
+}
+
 // Use in-memory storage for development
 let projectsData = [...PROJECTS];
 
@@ -28,7 +37,8 @@ export async function getProjects(): Promise<Project[]> {
   try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
-    return db.collection<Project>(COLLECTION_NAME).find().toArray();
+    const rawProjects = await db.collection(COLLECTION_NAME).find().toArray();
+    return rawProjects.map(normalizeProject);
   } catch (error) {
     console.warn('Failed to fetch from MongoDB, using in-memory data:', error);
     return projectsData;
@@ -42,7 +52,8 @@ export async function getProjectById(id: string | number): Promise<Project | nul
   try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
-    return db.collection<Project>(COLLECTION_NAME).findOne({ id: Number(id) });
+    const project = await db.collection(COLLECTION_NAME).findOne({ id: Number(id) });
+    return project ? normalizeProject(project) : null;
   } catch (error) {
     console.warn('Failed to fetch from MongoDB:', error);
     return projectsData.find(p => p.id === Number(id)) || null;
@@ -57,8 +68,8 @@ export async function addProject(project: Project): Promise<Project> {
   try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
-    await db.collection<Project>(COLLECTION_NAME).insertOne(project);
-    return project;
+    const result = await db.collection(COLLECTION_NAME).insertOne(project);
+    return normalizeProject({ ...project, _id: result.insertedId?.toString?.() });
   } catch (error) {
     console.warn('Failed to save to MongoDB, storing in memory:', error);
     projectsData.push(project);
@@ -77,13 +88,13 @@ export async function updateProject(id: number, project: Partial<Project>): Prom
   try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
-    const { _id, ...updateFields } = project as any;
-    const result = (await db.collection<Project>(COLLECTION_NAME).findOneAndUpdate(
+    const { _id, id: omittedId, ...updateFields } = project as any;
+    const result = await db.collection(COLLECTION_NAME).findOneAndUpdate(
       { id },
       { $set: updateFields },
       { returnDocument: 'after' }
-    )) as any;
-    return result?.value ?? null;
+    );
+    return result?.value ? normalizeProject(result.value) : null;
   } catch (error) {
     console.warn('Failed to update in MongoDB, updating in memory:', error);
     const index = projectsData.findIndex(p => p.id === id);

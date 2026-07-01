@@ -13,13 +13,14 @@ const AdminPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [useFileUpload, setUseFileUpload] = useState(false);
   const [portfolioPreviews, setPortfolioPreviews] = useState<string[]>([]);
   const [usePortfolioFileUpload, setUsePortfolioFileUpload] = useState(false);
   const [formData, setFormData] = useState<Partial<Project>>({
+    _id: '',
     id: 0,
     title: '',
     category: 'Living Room',
@@ -33,6 +34,7 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     fetchProjects()
       .then((data) => {
+        console.log('Fetched projects:', data);
         setProjects(data);
       })
       .finally(() => {
@@ -52,6 +54,7 @@ const AdminPanel: React.FC = () => {
       imageUrl: '',
       portfolio: [],
     });
+
     setEditingId(null);
     setImagePreview(null);
     setUseFileUpload(false);
@@ -61,8 +64,10 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleEditClick = (project: Project) => {
+    console.log("Editing project:", project);
     setFormData(project);
-    setEditingId(project.id);
+    setEditingId(project.id.toString());
+    console.log("Editing ID set to:", project.id.toString());
     setImagePreview(project.imageUrl || null);
     setUseFileUpload(false);
     setPortfolioPreviews(project.portfolio || []);
@@ -79,10 +84,10 @@ const AdminPanel: React.FC = () => {
         setError('Please fill in all required fields');
         return;
       }
-
+        console.log("editingId", editingId);
       if (editingId) {
         const updated = await updateProjectData(editingId, formData);
-        setProjects((prev) => prev.map((p) => (p.id === editingId ? updated : p)));
+        setProjects((prev) => prev.map((p) => (p.id.toString() === editingId ? updated : p)));
       } else {
         const created = await createProject(formData as Project);
         setProjects((prev) => [...prev, created]);
@@ -97,14 +102,14 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return;
 
     try {
       setSaving(true);
       setError(null);
       await deleteProjectData(id);
-      setProjects((prev) => prev.filter((p) => p.id !== id));
+      setProjects((prev) => prev.filter((p) => p.id.toString() !== id));
     } catch (err: any) {
       setError(err.message || 'Failed to delete project');
     } finally {
@@ -523,7 +528,7 @@ const AdminPanel: React.FC = () => {
                         <Edit2 size={14} /> Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(project.id)}
+                        onClick={() => handleDelete(project.id.toString())}
                         className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
                         disabled={saving}
                       >

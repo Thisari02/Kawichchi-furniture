@@ -11,6 +11,7 @@ export const COLORS = {
 
 export const PROJECTS: Project[] = [
   {
+    _id:'',
     id: 1,
     title: 'Luxury Living Room – Colombo 7',
     category: 'Living Room',
