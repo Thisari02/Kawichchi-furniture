@@ -19,6 +19,7 @@ const ProjectSchema = new mongoose.Schema({
   id: Number,
   title: String,
   category: String,
+  subcategory: String,
   location: String,
   imageUrl: String,
   description: String,

@@ -131,6 +131,9 @@ const ProjectDetail: React.FC = () => {
                 Category
               </h3>
               <p className="text-xl text-[#D4AF37] font-serif">{project.category}</p>
+              <p className="mt-2 text-sm uppercase tracking-[0.3em] text-[#2C2C2C]/70">
+                {project.subcategory}
+              </p>
             </div>
 
             {/* Materials */}

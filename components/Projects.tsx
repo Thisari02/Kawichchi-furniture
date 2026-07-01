@@ -1,17 +1,16 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Layers } from 'lucide-react';
-import { PROJECTS } from '../constants';
+import { CATEGORY_FILTERS, CATEGORY_SUBCATEGORIES, PROJECTS } from '../constants';
 import { fetchProjects } from '../lib/projectApi';
-import { Category, Project } from '../types';
-
-const categories: Category[] = ['All', 'Living Room', 'Bedroom', 'Office', 'Dining'];
+import type { FilterCategory, Project, Subcategory } from '../types';
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState<Category>('All');
+  const [activeCategory, setActiveCategory] = useState<FilterCategory>('All');
+  const [activeSubcategory, setActiveSubcategory] = useState<Subcategory | 'All'>('All');
   const [projects, setProjects] = useState<Project[]>(PROJECTS);
   const [loading, setLoading] = useState(true);
 
@@ -34,8 +33,29 @@ const Projects: React.FC = () => {
     };
   }, []);
 
-  const filteredProjects = projects.filter((p) =>
-    activeCategory === 'All' ? true : p.category === activeCategory
+  useEffect(() => {
+    if (activeCategory === 'All') {
+      setActiveSubcategory('All');
+    } else if (
+      activeSubcategory !== 'All' &&
+      !CATEGORY_SUBCATEGORIES[activeCategory].includes(activeSubcategory as Subcategory)
+    ) {
+      setActiveSubcategory(CATEGORY_SUBCATEGORIES[activeCategory][0]);
+    }
+  }, [activeCategory, activeSubcategory]);
+
+  const filteredProjects = useMemo(
+    () =>
+      projects.filter((p) => {
+        if (activeCategory !== 'All' && p.category !== activeCategory) {
+          return false;
+        }
+        if (activeSubcategory !== 'All' && p.subcategory !== activeSubcategory) {
+          return false;
+        }
+        return true;
+      }),
+    [projects, activeCategory, activeSubcategory]
   );
 
 
@@ -71,14 +91,14 @@ const Projects: React.FC = () => {
         <div className="w-24 h-1 bg-[#BFA57A] mx-auto mb-10"></div>
         
         {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-4">
-          {categories.map(cat => (
+        <div className="flex flex-wrap justify-center gap-4 mb-4">
+          {CATEGORY_FILTERS.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-6 py-2 text-sm tracking-widest uppercase transition-all duration-300 border-b-2 ${
-                activeCategory === cat 
-                  ? 'border-[#BFA57A] text-[#BFA57A]' 
+                activeCategory === cat
+                  ? 'border-[#BFA57A] text-[#BFA57A]'
                   : 'border-transparent text-[#2C2C2C]/50 hover:text-[#2C2C2C]'
               }`}
             >
@@ -86,6 +106,34 @@ const Projects: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {activeCategory !== 'All' && (
+          <div className="flex flex-wrap justify-center gap-3">
+            {CATEGORY_SUBCATEGORIES[activeCategory].map((subcat) => (
+              <button
+                key={subcat}
+                onClick={() => setActiveSubcategory(subcat)}
+                className={`px-4 py-2 text-xs tracking-[0.3em] uppercase transition-all duration-300 border rounded-full ${
+                  activeSubcategory === subcat
+                    ? 'bg-[#BFA57A] text-white border-[#BFA57A]'
+                    : 'bg-white text-[#2C2C2C]/80 border-[#D4AF37]/20 hover:bg-[#F5F1EA]'
+                }`}
+              >
+                {subcat}
+              </button>
+            ))}
+            <button
+              onClick={() => setActiveSubcategory('All')}
+              className={`px-4 py-2 text-xs tracking-[0.3em] uppercase transition-all duration-300 border rounded-full ${
+                activeSubcategory === 'All'
+                  ? 'bg-[#BFA57A] text-white border-[#BFA57A]'
+                  : 'bg-white text-[#2C2C2C]/80 border-[#D4AF37]/20 hover:bg-[#F5F1EA]'
+              }`}
+            >
+              All Subcategories
+            </button>
+          </div>
+        )}
       </div>
 
       <motion.div 
@@ -112,9 +160,15 @@ const Projects: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 opacity-90 transition-opacity duration-500" />
                 <div className="absolute inset-0 flex flex-col justify-end p-8">
-                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#BFA57A] mb-4">
-                    <MapPin size={14} />
-                    <span>{project.location}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#BFA57A] mb-4">
+                    <span>{project.category}</span>
+                    <span className="text-white/60">•</span>
+                    <span>{project.subcategory}</span>
+                    <span className="text-white/60">•</span>
+                    <span className="flex items-center gap-1">
+                      <MapPin size={14} />
+                      {project.location}
+                    </span>
                   </div>
                   <h3 className="text-white text-2xl font-serif mb-3">{project.title}</h3>
                   <p className="text-white/80 text-sm leading-relaxed mb-4">

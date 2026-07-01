@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trash2, Edit2, Save, X } from 'lucide-react';
-import { PROJECTS } from '../constants';
+import { CATEGORY_SUBCATEGORIES, PROJECTS } from '../constants';
 import { fetchProjects } from '../lib/projectApi';
 import { createProject, updateProjectData, deleteProjectData } from '../lib/adminApi';
-import type { Project, Category } from '../types';
+import type { Category, Project, Subcategory } from '../types';
 
 const categories: Category[] = ['Living Room', 'Bedroom', 'Office', 'Dining'];
 
@@ -24,6 +24,7 @@ const AdminPanel: React.FC = () => {
     id: 0,
     title: '',
     category: 'Living Room',
+    subcategory: 'Sofa Collection',
     location: '',
     materials: [],
     description: '',
@@ -48,6 +49,7 @@ const AdminPanel: React.FC = () => {
       id: nextId,
       title: '',
       category: 'Living Room',
+      subcategory: 'Sofa Collection',
       location: '',
       materials: [],
       description: '',
@@ -62,6 +64,10 @@ const AdminPanel: React.FC = () => {
     setUsePortfolioFileUpload(false);
     setShowForm(true);
   };
+
+  const subcategoryOptions = useMemo<Subcategory[]>(() => {
+    return CATEGORY_SUBCATEGORIES[formData.category as Category] ?? CATEGORY_SUBCATEGORIES['Living Room'];
+  }, [formData.category]);
 
   const handleEditClick = (project: Project) => {
     console.log("Editing project:", project);
@@ -80,11 +86,11 @@ const AdminPanel: React.FC = () => {
       setSaving(true);
       setError(null);
 
-      if (!formData.title || !formData.category || !formData.location) {
+      if (!formData.title || !formData.category || !formData.subcategory || !formData.location) {
         setError('Please fill in all required fields');
         return;
       }
-        console.log("editingId", editingId);
+      console.log("editingId", editingId);
       if (editingId) {
         const updated = await updateProjectData(editingId, formData);
         setProjects((prev) => prev.map((p) => (p.id.toString() === editingId ? updated : p)));
@@ -273,12 +279,38 @@ const AdminPanel: React.FC = () => {
                   </label>
                   <select
                     value={formData.category || 'Living Room'}
-                    onChange={(e) => handleFieldChange('category', e.target.value as Category)}
+                    onChange={(e) => {
+                      const nextCategory = e.target.value as Category;
+                      const nextSubcategory = CATEGORY_SUBCATEGORIES[nextCategory][0];
+                      setFormData((prev) => ({
+                        ...prev,
+                        category: nextCategory,
+                        subcategory: nextSubcategory,
+                      }));
+                    }}
                     className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
                   >
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Subcategory */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Subcategory <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.subcategory || subcategoryOptions[0]}
+                    onChange={(e) => handleFieldChange('subcategory', e.target.value as Subcategory)}
+                    className="w-full px-3 py-2 border border-[#D4AF37]/30 rounded"
+                  >
+                    {subcategoryOptions.map((subcat) => (
+                      <option key={subcat} value={subcat}>
+                        {subcat}
                       </option>
                     ))}
                   </select>
@@ -505,6 +537,7 @@ const AdminPanel: React.FC = () => {
                   <th className="text-left p-3 font-semibold">ID</th>
                   <th className="text-left p-3 font-semibold">Title</th>
                   <th className="text-left p-3 font-semibold">Category</th>
+                  <th className="text-left p-3 font-semibold">Subcategory</th>
                   <th className="text-left p-3 font-semibold">Location</th>
                   <th className="text-center p-3 font-semibold">Actions</th>
                 </tr>
@@ -518,6 +551,7 @@ const AdminPanel: React.FC = () => {
                     <td className="p-3">{project.id}</td>
                     <td className="p-3">{project.title}</td>
                     <td className="p-3">{project.category}</td>
+                    <td className="p-3">{project.subcategory}</td>
                     <td className="p-3 text-sm text-[#2C2C2C]/70">{project.location}</td>
                     <td className="p-3 text-center">
                       <button

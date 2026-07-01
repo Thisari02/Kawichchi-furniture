@@ -39,7 +39,7 @@ app.get('/api/projects/:id', async (req, res) => {
 app.post('/api/admin/projects', async (req, res) => {
   try {
     const project = req.body;
-    if (!project || !project.id || !project.title || !project.category) {
+    if (!project || !project.id || !project.title || !project.category || !project.subcategory) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     const createdProject = await addProject(project);

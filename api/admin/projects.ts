@@ -1,11 +1,11 @@
-import { addProject, updateProject, deleteProject } from '../../lib/projectService';
+import { addProject } from '../../lib/projectService';
 import type { Project } from '../../types';
 
 export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const project: Project = req.body;
-      if (!project.id || !project.title || !project.category) {
+      if (!project.id || !project.title || !project.category || !project.subcategory) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
       const result = await addProject(project);

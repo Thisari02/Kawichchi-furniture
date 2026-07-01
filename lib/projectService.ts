@@ -113,7 +113,7 @@ export async function deleteProject(id: number): Promise<void> {
   try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
-    await db.collection<Project>(COLLECTION_NAME).deleteOne({ id });
+    await db.collection(COLLECTION_NAME).deleteOne({ id });
   } catch (error) {
     console.warn('Failed to delete from MongoDB, deleting from memory:', error);
     projectsData = projectsData.filter(p => p.id !== id);
