@@ -50,7 +50,8 @@ const Projects: React.FC = () => {
         if (activeCategory !== 'All' && p.category !== activeCategory) {
           return false;
         }
-        if (activeSubcategory !== 'All' && p.subcategory !== activeSubcategory) {
+        const projectSubcategory = p.subcategory || p.subCategory || '';
+        if (activeSubcategory !== 'All' && projectSubcategory !== activeSubcategory) {
           return false;
         }
         return true;
@@ -163,7 +164,7 @@ const Projects: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#BFA57A] mb-4">
                     <span>{project.category}</span>
                     <span className="text-white/60">•</span>
-                    <span>{project.subcategory}</span>
+                    <span>{project.subcategory || project.subCategory || 'Custom'}</span>
                     <span className="text-white/60">•</span>
                     <span className="flex items-center gap-1">
                       <MapPin size={14} />
@@ -178,7 +179,7 @@ const Projects: React.FC = () => {
                     <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/70">
                       <Layers size={12} /> Materials
                     </span>
-                    {project.materials.map((material) => (
+                    {(project.materials || []).map((material) => (
                       <span
                         key={material}
                         className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] bg-white/10 text-white/80 border border-white/20"

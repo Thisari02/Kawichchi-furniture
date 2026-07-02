@@ -1,63 +1,141 @@
 require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
-app.use(cors());
-app.use(express.json({ limit: '200mb' }));
-app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
-// MongoDB connect
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+// Middleware
+app.use(cors());
+app.use(express.json({ limit: "200mb" }));
+app.use(express.urlencoded({ extended: true, limit: "200mb" }));
+
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("✅ MongoDB Connected");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
+  });
 
 // Schema
-const ProjectSchema = new mongoose.Schema({
-  id: Number,
-  title: String,
-  category: String,
-  subcategory: String,
-  location: String,
-  imageUrl: String,
-  description: String,
-  materials: [String],
-  portfolio: [String],
-});
+const ProjectSchema = new mongoose.Schema(
+  {
+    id: Number,
+    title: String,
+    category: String,
+    subCategory: String,
+    subcategory: String,
+    subType: String,
+    images: [String],
+    location: String,
+    imageUrl: String,
+    description: String,
+    customizationNote: String,
+    materials: [String],
+    portfolio: [String],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const Project = mongoose.model("Project", ProjectSchema);
 
-// GET all projects
+// Routes
+
+// Get all projects
 app.get("/api/projects", async (req, res) => {
-  const projects = await Project.find();
-  res.json(projects);
+  try {
+    const projects = await Project.find();
+    const normalized = projects.map((project) => ({
+      ...project.toObject(),
+      subCategory: project.subCategory || project.subcategory || '',
+      subcategory: project.subCategory || project.subcategory || '',
+      subType: project.subType || '',
+      images: project.images || [],
+      imageUrl: project.imageUrl || project.images?.[0] || '',
+      materials: project.materials || [],
+      portfolio: project.portfolio || project.images || [],
+      customizationNote: project.customizationNote || '',
+    }));
+    res.json(normalized);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// CREATE project
+// Create project
 app.post("/api/admin/projects", async (req, res) => {
-  const project = new Project(req.body);
-  await project.save();
-  res.json(project);
+  try {
+    const payload = {
+      ...req.body,
+      id: req.body.id ?? Date.now(),
+      subCategory: req.body.subCategory || req.body.subcategory || '',
+      subcategory: req.body.subCategory || req.body.subcategory || '',
+      subType: req.body.subType || '',
+      images: Array.isArray(req.body.images) ? req.body.images : [],
+      imageUrl: req.body.imageUrl || req.body.images?.[0] || '',
+      materials: Array.isArray(req.body.materials) ? req.body.materials : (req.body.customizationNote ? ['Custom Design'] : []),
+      portfolio: Array.isArray(req.body.portfolio) ? req.body.portfolio : (Array.isArray(req.body.images) ? req.body.images : []),
+      customizationNote: req.body.customizationNote || '',
+    };
+
+    const project = new Project(payload);
+    await project.save();
+    res.status(201).json(project);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// UPDATE
+// Update project
 app.put("/api/admin/projects/:id", async (req, res) => {
-  const project = await Project.findOneAndUpdate(
-    { id: req.params.id },
-    req.body,
-    { new: true }
-  );
-  res.json(project);
+  try {
+    const payload = {
+      ...req.body,
+      subCategory: req.body.subCategory || req.body.subcategory || '',
+      subcategory: req.body.subCategory || req.body.subcategory || '',
+      subType: req.body.subType || '',
+      images: Array.isArray(req.body.images) ? req.body.images : [],
+      imageUrl: req.body.imageUrl || req.body.images?.[0] || '',
+      materials: Array.isArray(req.body.materials) ? req.body.materials : (req.body.customizationNote ? ['Custom Design'] : []),
+      portfolio: Array.isArray(req.body.portfolio) ? req.body.portfolio : (Array.isArray(req.body.images) ? req.body.images : []),
+      customizationNote: req.body.customizationNote || '',
+    };
+
+    const project = await Project.findOneAndUpdate(
+      { id: req.params.id },
+      payload,
+      { new: true }
+    );
+
+    res.json(project);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// DELETE
+// Delete project
 app.delete("/api/admin/projects/:id", async (req, res) => {
-  await Project.findOneAndDelete({ id: req.params.id });
-  res.json({ message: "Deleted" });
+  try {
+    await Project.findOneAndDelete({ id: req.params.id });
+
+    res.json({
+      success: true,
+      message: "Project deleted",
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// Server
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

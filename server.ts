@@ -36,13 +36,32 @@ app.get('/api/projects/:id', async (req, res) => {
   }
 });
 
+app.get('/api/admin/projects', async (req, res) => {
+  try {
+    const projects = await getProjects();
+    return res.status(200).json(projects);
+  } catch (error) {
+    console.error('Error fetching admin projects:', error);
+    return res.status(500).json({ error: 'Failed to load projects' });
+  }
+});
+
 app.post('/api/admin/projects', async (req, res) => {
   try {
     const project = req.body;
-    if (!project || !project.id || !project.title || !project.category || !project.subcategory) {
+    if (!project || !project.title || !project.category || !project.subCategory || !project.subType) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-    const createdProject = await addProject(project);
+
+    const normalizedProject = {
+      ...project,
+      id: project.id ?? Date.now(),
+      images: Array.isArray(project.images) ? project.images : [],
+      description: project.description ?? '',
+      customizationNote: project.customizationNote ?? '',
+    };
+
+    const createdProject = await addProject(normalizedProject);
     return res.status(201).json(createdProject);
   } catch (error) {
     console.error('Error creating project:', error);

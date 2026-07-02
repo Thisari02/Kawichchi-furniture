@@ -1,11 +1,24 @@
 import { PROJECTS } from '../constants';
 import type { Project } from '../types';
 
-const configuredApiRoot = import.meta.env.VITE_API_BASE || '';
+const configuredApiRoot = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:4000' : 'https://kawichchi-furniture.onrender.com');
 const API_BASE = configuredApiRoot ? `${configuredApiRoot.replace(/\/$/, '')}/api` : '/api';
 
 function normalizeProject(project: any): Project {
-  return project as Project;
+  const images = Array.isArray(project?.images) ? project.images : [];
+  const normalizedSubCategory = project?.subCategory || project?.subcategory || '';
+  return {
+    ...project,
+    id: Number(project?.id ?? 0),
+    subcategory: normalizedSubCategory,
+    subCategory: normalizedSubCategory,
+    subType: project?.subType || '',
+    imageUrl: project?.imageUrl || images[0] || '',
+    location: project?.location || 'Sri Lanka',
+    materials: Array.isArray(project?.materials) ? project.materials : (project?.customizationNote ? ['Custom Design'] : []),
+    portfolio: Array.isArray(project?.portfolio) ? project.portfolio : images,
+    description: project?.description || '',
+  } as Project;
 }
 
 export async function fetchProjects(): Promise<Project[]> {

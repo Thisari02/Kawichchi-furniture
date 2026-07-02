@@ -4,9 +4,23 @@ import { PROJECTS } from '../constants';
 function normalizeProject(project: any): Project {
   if (!project) return project;
   const { _id, ...rest } = project;
+  const images = Array.isArray(rest.images) ? rest.images : [];
+  const normalizedSubCategory = rest.subCategory ?? rest.subcategory ?? '';
+
   return {
     ...rest,
     _id: _id?.toString?.() ?? undefined,
+    id: Number(rest.id ?? Date.now()),
+    subCategory: normalizedSubCategory,
+    subcategory: normalizedSubCategory,
+    subType: rest.subType ?? '',
+    images,
+    imageUrl: rest.imageUrl || images[0] || '',
+    location: rest.location || 'Sri Lanka',
+    materials: Array.isArray(rest.materials) ? rest.materials : (rest.customizationNote ? ['Custom Design'] : []),
+    description: rest.description ?? '',
+    customizationNote: rest.customizationNote ?? '',
+    portfolio: Array.isArray(rest.portfolio) ? rest.portfolio : images,
   };
 }
 

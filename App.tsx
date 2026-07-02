@@ -7,7 +7,7 @@ import About from './components/About';
 import Craftsmanship from './components/Craftsmanship';
 import Projects from './components/Projects';
 import ProjectDetail from './components/ProjectDetail';
-import AdminPanel from './components/AdminPanel';
+import AdminPanel from './src/pages/AdminPanel';
 import VideoShowcase from './components/VideoShowcase';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';

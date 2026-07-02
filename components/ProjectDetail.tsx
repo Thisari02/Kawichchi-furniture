@@ -132,7 +132,7 @@ const ProjectDetail: React.FC = () => {
               </h3>
               <p className="text-xl text-[#D4AF37] font-serif">{project.category}</p>
               <p className="mt-2 text-sm uppercase tracking-[0.3em] text-[#2C2C2C]/70">
-                {project.subcategory}
+                {project.subcategory || project.subCategory || 'Custom'}
               </p>
             </div>
 
@@ -143,7 +143,7 @@ const ProjectDetail: React.FC = () => {
                 Materials Used
               </h3>
               <div className="flex flex-wrap gap-3">
-                {project.materials.map((material) => (
+                {(project.materials || []).map((material) => (
                   <span
                     key={material}
                     className="px-4 py-2 text-sm uppercase tracking-[0.2em] bg-[#F5F1EA] text-[#2C2C2C] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-colors"

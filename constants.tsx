@@ -1,13 +1,12 @@
 
 import { Category, FilterCategory, Project, Stat, Subcategory, Testimonial, InstagramPost, ProcessStep, VideoShowcase } from './types';
+import { categories } from './src/data/categories';
 
-export const CATEGORY_FILTERS: FilterCategory[] = ['All', 'Living Room', 'Bedroom', 'Office', 'Dining'];
-export const CATEGORY_SUBCATEGORIES: Record<Category, Subcategory[]> = {
-  'Living Room': ['Sofa Collection', 'Lounge Area', 'Entertainment Wall'],
-  Bedroom: ['Master Bedroom', 'Guest Suite', 'Dressing Room'],
-  Office: ['Executive Suite', 'Creative Studio', 'Conference Room'],
-  Dining: ['Formal Dining', 'Breakfast Nook', 'Banquet Table'],
-};
+export const CATEGORY_FILTERS: FilterCategory[] = ['All', ...categories.map((cat) => cat.name)];
+export const CATEGORY_SUBCATEGORIES: Record<Category, Subcategory[]> = categories.reduce((acc, cat) => {
+  acc[cat.name] = cat.subCategories.map((sub) => sub.name);
+  return acc;
+}, {} as Record<Category, Subcategory[]>);
 
 export const COLORS = {
   primary: '#2C2C2C',
@@ -23,7 +22,7 @@ export const PROJECTS: Project[] = [
     id: 1,
     title: 'Luxury Living Room – Colombo 7',
     category: 'Living Room',
-    subcategory: 'Sofa Collection',
+    subcategory: 'Seating',
     location: 'Colombo 7, Sri Lanka',
     materials: ['Grade A Teak', 'Italian Velvet', 'Brass Details'],
     description: 'A curated seating ensemble with sculpted teak frames and velvet upholstery, designed for refined entertaining.',
@@ -38,7 +37,7 @@ export const PROJECTS: Project[] = [
     id: 2,
     title: 'Penthouse Bedroom – Rajagiriya',
     category: 'Bedroom',
-    subcategory: 'Master Bedroom',
+    subcategory: 'Beds',
     location: 'Rajagiriya, Sri Lanka',
     materials: ['Walnut Veneer', 'Leather Panels', 'Soft Linen'],
     description: 'Warm walnut textures meet muted textiles to deliver a calm, hotel-grade sleep sanctuary.',
@@ -52,8 +51,8 @@ export const PROJECTS: Project[] = [
   {
     id: 3,
     title: 'Executive Office – Colombo 3',
-    category: 'Office',
-    subcategory: 'Executive Suite',
+    category: 'Kitchen & Pantry',
+    subcategory: 'Kitchen Types',
     location: 'Colombo 3, Sri Lanka',
     materials: ['Smoked Oak', 'Matte Brass', 'Stone Inlay'],
     description: 'A tailored office suite that balances authority with understated luxury for executive leadership.',
@@ -67,8 +66,8 @@ export const PROJECTS: Project[] = [
   {
     id: 4,
     title: 'Private Dining – Galle',
-    category: 'Dining',
-    subcategory: 'Formal Dining',
+    category: 'Dining Area',
+    subcategory: 'Dining Sets',
     location: 'Galle, Sri Lanka',
     materials: ['Plantation Teak', 'Natural Stone', 'Handwoven Linen'],
     description: 'A dramatic 10-seater dining suite crafted for ocean-facing villas and intimate gatherings.',
@@ -83,7 +82,7 @@ export const PROJECTS: Project[] = [
     id: 5,
     title: 'Signature Lounge – Cinnamon Gardens',
     category: 'Living Room',
-    subcategory: 'Lounge Area',
+    subcategory: 'Furniture Units',
     location: 'Cinnamon Gardens, Sri Lanka',
     materials: ['Teak', 'Bouclé Fabric', 'Bronze Accents'],
     description: 'An inviting lounge corner with sculptural forms and tactile fabrics for luxury hospitality.',
@@ -98,7 +97,7 @@ export const PROJECTS: Project[] = [
     id: 6,
     title: 'Master Wardrobe – Talpe',
     category: 'Bedroom',
-    subcategory: 'Guest Suite',
+    subcategory: 'Storage',
     location: 'Talpe, Sri Lanka',
     materials: ['American Walnut', 'Smoked Glass', 'Soft Leather'],
     description: 'A bespoke wardrobe system engineered for seamless storage and boutique-level presentation.',
@@ -112,8 +111,8 @@ export const PROJECTS: Project[] = [
   {
     id: 7,
     title: 'Creative Studio – Colombo 5',
-    category: 'Office',
-    subcategory: 'Creative Studio',
+    category: 'Doors & Windows',
+    subcategory: 'Doors',
     location: 'Colombo 5, Sri Lanka',
     materials: ['Ash Wood', 'Matte Steel', 'Acoustic Felt'],
     description: 'A collaborative workspace designed for teams seeking warmth, clarity, and focus.',
@@ -127,8 +126,8 @@ export const PROJECTS: Project[] = [
   {
     id: 8,
     title: 'Artisan Breakfast Lounge – Kandy',
-    category: 'Dining',
-    subcategory: 'Breakfast Nook',
+    category: 'Staircase & Flooring',
+    subcategory: 'Staircase',
     location: 'Kandy, Sri Lanka',
     materials: ['Teak', 'Marble', 'Handwoven Rattan'],
     description: 'A sunlit breakfast lounge with handcrafted textures for boutique residences.',
