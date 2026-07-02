@@ -24,19 +24,15 @@ mongoose
 // Schema
 const ProjectSchema = new mongoose.Schema(
   {
-    id: Number,
-    title: String,
-    category: String,
-    subCategory: String,
-    subcategory: String,
-    subType: String,
-    images: [String],
-    location: String,
-    imageUrl: String,
-    description: String,
-    customizationNote: String,
-    materials: [String],
-    portfolio: [String],
+    title: { type: String, required: true },
+    category: { type: String, required: true },
+    subCategory: { type: String, required: true },
+    subType: { type: String, required: true },
+    images: { type: [String], default: [] },
+    description: { type: String, default: "" },
+    materials: { type: [String], default: [] },
+    customizationNote: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
@@ -46,21 +42,29 @@ const ProjectSchema = new mongoose.Schema(
 const Project = mongoose.model("Project", ProjectSchema);
 
 // Routes
+app.get("/api/admin/reset-db", async (req, res) => {
+  try {
+    await Project.deleteMany({});
+    res.json({ message: "All project data deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-// Get all projects
 app.get("/api/projects", async (req, res) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find({}).lean();
     const normalized = projects.map((project) => ({
-      ...project.toObject(),
-      subCategory: project.subCategory || project.subcategory || '',
-      subcategory: project.subCategory || project.subcategory || '',
-      subType: project.subType || '',
+      _id: project._id,
+      title: project.title,
+      category: project.category,
+      subCategory: project.subCategory,
+      subType: project.subType,
       images: project.images || [],
-      imageUrl: project.imageUrl || project.images?.[0] || '',
+      description: project.description || "",
       materials: project.materials || [],
-      portfolio: project.portfolio || project.images || [],
-      customizationNote: project.customizationNote || '',
+      customizationNote: project.customizationNote || "",
+      createdAt: project.createdAt,
     }));
     res.json(normalized);
   } catch (err) {
@@ -68,20 +72,17 @@ app.get("/api/projects", async (req, res) => {
   }
 });
 
-// Create project
 app.post("/api/admin/projects", async (req, res) => {
   try {
     const payload = {
-      ...req.body,
-      id: req.body.id ?? Date.now(),
-      subCategory: req.body.subCategory || req.body.subcategory || '',
-      subcategory: req.body.subCategory || req.body.subcategory || '',
-      subType: req.body.subType || '',
+      title: req.body.title,
+      category: req.body.category,
+      subCategory: req.body.subCategory,
+      subType: req.body.subType,
       images: Array.isArray(req.body.images) ? req.body.images : [],
-      imageUrl: req.body.imageUrl || req.body.images?.[0] || '',
-      materials: Array.isArray(req.body.materials) ? req.body.materials : (req.body.customizationNote ? ['Custom Design'] : []),
-      portfolio: Array.isArray(req.body.portfolio) ? req.body.portfolio : (Array.isArray(req.body.images) ? req.body.images : []),
-      customizationNote: req.body.customizationNote || '',
+      description: req.body.description || "",
+      materials: Array.isArray(req.body.materials) ? req.body.materials : [],
+      customizationNote: req.body.customizationNote || "",
     };
 
     const project = new Project(payload);
@@ -92,26 +93,27 @@ app.post("/api/admin/projects", async (req, res) => {
   }
 });
 
-// Update project
 app.put("/api/admin/projects/:id", async (req, res) => {
   try {
     const payload = {
-      ...req.body,
-      subCategory: req.body.subCategory || req.body.subcategory || '',
-      subcategory: req.body.subCategory || req.body.subcategory || '',
-      subType: req.body.subType || '',
+      title: req.body.title,
+      category: req.body.category,
+      subCategory: req.body.subCategory,
+      subType: req.body.subType,
       images: Array.isArray(req.body.images) ? req.body.images : [],
-      imageUrl: req.body.imageUrl || req.body.images?.[0] || '',
-      materials: Array.isArray(req.body.materials) ? req.body.materials : (req.body.customizationNote ? ['Custom Design'] : []),
-      portfolio: Array.isArray(req.body.portfolio) ? req.body.portfolio : (Array.isArray(req.body.images) ? req.body.images : []),
-      customizationNote: req.body.customizationNote || '',
+      description: req.body.description || "",
+      materials: Array.isArray(req.body.materials) ? req.body.materials : [],
+      customizationNote: req.body.customizationNote || "",
     };
 
-    const project = await Project.findOneAndUpdate(
-      { id: req.params.id },
-      payload,
-      { new: true }
-    );
+    const project = await Project.findByIdAndUpdate(req.params.id, payload, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
 
     res.json(project);
   } catch (err) {
@@ -119,10 +121,13 @@ app.put("/api/admin/projects/:id", async (req, res) => {
   }
 });
 
-// Delete project
 app.delete("/api/admin/projects/:id", async (req, res) => {
   try {
-    await Project.findOneAndDelete({ id: req.params.id });
+    const project = await Project.findByIdAndDelete(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
 
     res.json({
       success: true,
