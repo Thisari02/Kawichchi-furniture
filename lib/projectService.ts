@@ -1,5 +1,4 @@
 import type { Project } from '../types';
-import { PROJECTS } from '../constants';
 
 function normalizeProject(project: any): Project {
   if (!project) return project;
@@ -25,7 +24,7 @@ function normalizeProject(project: any): Project {
 }
 
 // Use in-memory storage for development
-let projectsData = [...PROJECTS];
+let projectsData: Project[] = [];
 
 // MongoDB client - will be null if not available
 let client: any = null;

@@ -8,7 +8,8 @@
     "dev:api": "tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "seed-projects": "node scripts/seedProjects.js"
+    "seed-projects": "node scripts/seedProjects.js",
+    "normalize-projects": "tsx scripts/normalizeProjects.ts"
   },
   "dependencies": {
     "@vercel/functions": "^3.7.4",
@@ -16,6 +17,7 @@
     "framer-motion": "^12.31.0",
     "lucide-react": "^0.563.0",
     "mongodb": "^7.3.0",
+    "mongoose": "^9.7.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.15.1"

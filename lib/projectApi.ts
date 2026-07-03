@@ -1,5 +1,6 @@
-import { PROJECTS } from '../constants';
 import type { Project } from '../types';
+
+const PROJECTS_FALLBACK: Project[] = [];
 
 const configuredApiRoot = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:4000' : 'https://kawichchi-furniture.onrender.com');
 const API_BASE = configuredApiRoot ? `${configuredApiRoot.replace(/\/$/, '')}/api` : '/api';
@@ -31,7 +32,7 @@ export async function fetchProjects(): Promise<Project[]> {
     return (data as any[]).map(normalizeProject);
   } catch (error) {
     console.warn('Failed to load projects from API, using local data.', error);
-    return PROJECTS;
+    return PROJECTS_FALLBACK;
   }
 }
 
@@ -44,6 +45,6 @@ export async function fetchProjectById(id: String): Promise<Project | null> {
     return normalizeProject(await response.json());
   } catch (error) {
     console.warn(`Failed to load project ${id} from API, using local fallback.`, error);
-    return PROJECTS.find((project) => project.id.toString() === id.toString()) ?? null;
+    return PROJECTS_FALLBACK.find((project) => project.id.toString() === id.toString()) ?? null;
   }
 }

@@ -3,15 +3,21 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Layers } from 'lucide-react';
-import { CATEGORY_FILTERS, CATEGORY_SUBCATEGORIES, PROJECTS } from '../constants';
 import { fetchProjects } from '../lib/projectApi';
 import type { FilterCategory, Project, Subcategory } from '../types';
+import { categories } from '../src/data/categories';
+
+const CATEGORY_FILTERS: FilterCategory[] = ['All', ...categories.map((cat) => cat.name)];
+const CATEGORY_SUBCATEGORIES: Record<string, Subcategory[]> = categories.reduce((acc, cat) => {
+  acc[cat.name] = cat.subCategories.map((sub) => sub.name);
+  return acc;
+}, {} as Record<string, Subcategory[]>);
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<FilterCategory>('All');
   const [activeSubcategory, setActiveSubcategory] = useState<Subcategory | 'All'>('All');
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Layers } from 'lucide-react';
-import { PROJECTS } from '../constants';
-import { fetchProjectById } from '../lib/projectApi';
+import { fetchProjectById, fetchProjects } from '../lib/projectApi';
 import type { Project } from '../types';
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
+  const [relatedProjects, setRelatedProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,10 +23,22 @@ const ProjectDetail: React.FC = () => {
     }
 
     fetchProjectById(projectId)
-      .then((data) => {
+      .then(async (data) => {
         console.log('Fetched project data:', data);
         if (!canceled) {
           setProject(data);
+        }
+
+        if (!data) {
+          return;
+        }
+
+        const allProjects = await fetchProjects();
+        if (!canceled) {
+          const related = allProjects
+            .filter((p) => p.category === data.category && p.id !== data.id)
+            .slice(0, 3);
+          setRelatedProjects(related);
         }
       })
       .finally(() => {
@@ -65,10 +77,6 @@ const ProjectDetail: React.FC = () => {
       </section>
     );
   }
-
-  const relatedProjects = PROJECTS.filter(
-    p => p.category === project.category && p.id !== project.id
-  ).slice(0, 3);
 
   return (
     <section className="bg-white min-h-screen">

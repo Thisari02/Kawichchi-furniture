@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'react';
 import { categories } from '../data/categories';
+import type { Project } from '../types/project';
 
-type ProjectForm = {
-  id?: number;
-  title: string;
-  category: string;
-  subCategory: string;
-  subType: string;
-  images: string[];
-  description: string;
-  customizationNote: string;
-};
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? 'http://localhost:4000'
+    : 'https://kawichchi-furniture.onrender.com');
 
-type ProjectRecord = ProjectForm & {
-  _id?: string;
-};
-
-const initialForm: ProjectForm = {
+const initialForm: Project = {
+  id: undefined,
   title: '',
   category: '',
   subCategory: '',
@@ -26,232 +19,270 @@ const initialForm: ProjectForm = {
   customizationNote: '',
 };
 
-const API_BASE = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:4000' : 'https://kawichchi-furniture.onrender.com')).replace(/\/$/, '');
-
 export default function AdminPanel() {
-  const [form, setForm] = useState<ProjectForm>(initialForm);
-  const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [form, setForm] = useState<Project>(initialForm);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
-  const subCategories = categories.find((c) => c.name === form.category)?.subCategories || [];
-  const subTypes = subCategories.find((s) => s.name === form.subCategory)?.subTypes || [];
+  const subCategories =
+    categories.find((c) => c.name === form.category)?.subCategories || [];
 
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_BASE}/api/admin/projects`);
-      if (!res.ok) throw new Error('Unable to load projects');
-      const data = await res.json();
-      setProjects(Array.isArray(data) ? data : []);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Failed to load projects');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const subTypes =
+    subCategories.find((s) => s.name === form.subCategory)?.subTypes || [];
 
+  // Load projects
   useEffect(() => {
-    void loadProjects();
+    fetch(`${API_BASE}/api/admin/projects`)
+      .then((res) => res.json())
+      .then(setProjects);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (!files.length) return;
+    if (!files.length) {
+      return;
+    }
 
-    const promises = files.map(
-      (file) =>
-        new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
-          reader.readAsDataURL(file);
-        })
+    const uploadedImages = await Promise.all(
+      files.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
+            reader.readAsDataURL(file);
+          })
+      )
     );
 
-    const uploadedImages = await Promise.all(promises);
-    setForm((prev) => ({ ...prev, images: [...prev.images, ...uploadedImages.filter(Boolean)] }));
+    setForm((prev) => ({
+      ...prev,
+      images: [...(prev.images || []), ...uploadedImages.filter(Boolean)],
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
 
-    const payload = {
-      ...form,
-      images: form.images.filter(Boolean),
-    };
+    const url = editingId
+      ? `${API_BASE}/api/admin/projects/${editingId}`
+      : `${API_BASE}/api/admin/projects`;
 
-    try {
-      const url = form.id ? `${API_BASE}/api/admin/projects/${form.id}` : `${API_BASE}/api/admin/projects`;
-      const method = form.id ? 'PUT' : 'POST';
+    const method = editingId ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || 'Unable to save project');
-      }
-
-      await loadProjects();
-      setForm(initialForm);
-      setMessage(form.id ? 'Project updated successfully.' : 'Project created successfully.');
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to save project');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (project: ProjectRecord) => {
-    setForm({
-      id: project.id,
-      title: project.title || '',
-      category: project.category || '',
-      subCategory: project.subCategory || '',
-      subType: project.subType || '',
-      images: Array.isArray(project.images) ? project.images : [],
-      description: project.description || '',
-      customizationNote: project.customizationNote || '',
+    await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
     });
-    setMessage('Editing project.');
+
+    const res = await fetch(`${API_BASE}/api/admin/projects`);
+    const data = await res.json();
+
+    setProjects(data);
+    setForm(initialForm);
+    setEditingId(null);
+    setLoading(false);
   };
 
-  const handleDelete = async (id?: number) => {
-    if (!id) return;
-    if (!window.confirm('Delete this project?')) return;
+  const handleEdit = (p: any) => {
+    setForm(p);
+    setEditingId(String(p._id ?? p.id ?? ''));
+  };
 
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_BASE}/api/admin/projects/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Unable to delete project');
-      await loadProjects();
-      if (form.id === id) setForm(initialForm);
-      setMessage('Project deleted successfully.');
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to delete project');
-    } finally {
-      setLoading(false);
+  const handleDelete = async (id: string | number) => {
+    await fetch(`${API_BASE}/api/admin/projects/${id}`, {
+      method: 'DELETE',
+    });
+
+    setProjects(projects.filter((p: any) => String(p._id ?? p.id) !== String(id)));
+  };
+
+  const moveProject = (from: number, to: number) => {
+    if (from === to || to < 0 || to >= projects.length) {
+      return;
     }
+    const reordered = [...projects];
+    const [moved] = reordered.splice(from, 1);
+    reordered.splice(to, 0, moved);
+    setProjects(reordered);
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
-      <h2 className="mb-4 text-xl font-bold">Admin Panel - Manage Projects</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
 
-      {message ? <p className="mb-3 rounded border border-gray-300 bg-gray-50 p-2 text-sm">{message}</p> : null}
+      {/* FORM */}
+      <form onSubmit={handleSubmit} className="grid gap-3 max-w-xl">
 
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <form onSubmit={handleSubmit} className="rounded border border-gray-200 bg-white p-4 shadow-sm">
-          <h3 className="mb-3 text-lg font-semibold">{form.id ? 'Edit Project' : 'Create Project'}</h3>
+        <input
+          name="title"
+          placeholder="Title"
+          value={form.title}
+          onChange={handleChange}
+          className="border p-2"
+        />
 
-          <input
-            name="title"
-            value={form.title}
-            placeholder="Project Title"
-            onChange={handleChange}
-            className="mb-2 w-full border p-2"
-            required
-          />
+        {/* CATEGORY */}
+        <select
+          name="category"
+          value={form.category}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              category: e.target.value,
+              subCategory: '',
+              subType: '',
+            })
+          }
+          className="border p-2"
+        >
+          <option value="">Select Category</option>
+          {categories.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
 
-          <select name="category" value={form.category} onChange={handleChange} className="mb-2 w-full border p-2" required>
-            <option value="">Select Category</option>
-            {categories.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+        {/* SUBCATEGORY */}
+        <select
+          name="subCategory"
+          value={form.subCategory}
+          onChange={(e) =>
+            setForm({ ...form, subCategory: e.target.value, subType: '' })
+          }
+          className="border p-2"
+        >
+          <option value="">Select SubCategory</option>
+          {subCategories.map((s) => (
+            <option key={s.name} value={s.name}>
+              {s.name}
+            </option>
+          ))}
+        </select>
 
-          <select name="subCategory" value={form.subCategory} onChange={handleChange} className="mb-2 w-full border p-2" required>
-            <option value="">Select SubCategory</option>
-            {subCategories.map((s) => (
-              <option key={s.name} value={s.name}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+        {/* SUBTYPE */}
+        <select
+          name="subType"
+          value={form.subType}
+          onChange={handleChange}
+          className="border p-2"
+        >
+          <option value="">Select SubType</option>
+          {subTypes.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
 
-          <select name="subType" value={form.subType} onChange={handleChange} className="mb-2 w-full border p-2" required>
-            <option value="">Select SubType</option>
-            {subTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+        <textarea
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="border p-2"
+        />
 
-          <label className="mb-2 block text-sm text-gray-600">Upload images directly</label>
-          <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="mb-2 w-full border p-2" />
+        <label className="text-sm text-gray-600">Upload images</label>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          className="border p-2"
+        />
 
-          <input
-            name="images"
-            value={form.images.join(', ')}
-            placeholder="Image URLs (comma separated)"
-            onChange={(e) => setForm({ ...form, images: e.target.value.split(',').map((img) => img.trim()).filter(Boolean) })}
-            className="mb-2 w-full border p-2"
-          />
+        <input
+          name="images"
+          value={(form.images || []).join(', ')}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              images: e.target.value
+                .split(',')
+                .map((img) => img.trim())
+                .filter(Boolean),
+            })
+          }
+          placeholder="Image URLs / base64 (comma separated)"
+          className="border p-2"
+        />
 
-          <textarea
-            name="description"
-            value={form.description}
-            placeholder="Description"
-            onChange={handleChange}
-            className="mb-2 w-full border p-2"
-          />
+        <input
+          name="customizationNote"
+          value={form.customizationNote}
+          onChange={handleChange}
+          placeholder="Customization Note"
+          className="border p-2"
+        />
 
-          <input
-            name="customizationNote"
-            value={form.customizationNote}
-            placeholder="Customization Note"
-            onChange={handleChange}
-            className="mb-2 w-full border p-2"
-          />
+        <button className="bg-black text-white p-2">
+          {editingId ? 'Update' : 'Create'}
+        </button>
+      </form>
 
-          <div className="flex gap-2">
-            <button type="submit" className="flex-1 bg-black px-4 py-2 text-white" disabled={loading}>
-              {form.id ? 'Update Project' : 'Create Project'}
-            </button>
-            {form.id ? (
-              <button type="button" onClick={() => setForm(initialForm)} className="border px-4 py-2">
-                Cancel
+      {/* LIST */}
+      <div className="mt-8 space-y-2">
+        <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#8A6D2F]">
+          Drag cards to reorder gallery preview
+        </p>
+        {projects.map((p: any, index: number) => {
+          const projectKey = p._id ?? p.id ?? `${p.title}-${index}`;
+          const projectId = p._id ?? p.id;
+
+          return (
+          <div
+            key={projectKey}
+            draggable
+            onDragStart={() => setDragIndex(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => {
+              if (dragIndex !== null) {
+                moveProject(dragIndex, index);
+              }
+              setDragIndex(null);
+            }}
+            onDragEnd={() => setDragIndex(null)}
+            className="flex justify-between items-center p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition border border-[#D4AF37]/15"
+          >
+            <div>
+              <p className="mb-1 text-xs text-[#8A6D2F]">#{index + 1}</p>
+              <b>{p.title}</b>
+              <p className="text-sm">
+                {p.category} → {p.subCategory} → {p.subType}
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="px-3 py-1 rounded-full text-sm bg-[#D4AF37]/20 text-[#7A5D1E] hover:scale-105 transition"
+                onClick={() => moveProject(index, index - 1)}
+              >
+                ↑
               </button>
-            ) : null}
+              <button
+                type="button"
+                className="px-3 py-1 rounded-full text-sm bg-[#D4AF37]/20 text-[#7A5D1E] hover:scale-105 transition"
+                onClick={() => moveProject(index, index + 1)}
+              >
+                ↓
+              </button>
+              <button className="px-3 py-1 rounded-full text-sm bg-black text-white hover:scale-105 transition" onClick={() => handleEdit(p)}>Edit</button>
+              <button className="px-3 py-1 rounded-full text-sm bg-red-500 text-white hover:scale-105 transition" onClick={() => handleDelete(projectId)}>Delete</button>
+            </div>
           </div>
-        </form>
-
-        <div className="rounded border border-gray-200 bg-white p-4 shadow-sm">
-          <h3 className="mb-3 text-lg font-semibold">Existing Projects</h3>
-          {loading && !projects.length ? <p>Loading projects…</p> : null}
-          <div className="space-y-3">
-            {projects.map((project) => (
-              <div key={project.id || project._id} className="rounded border p-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-semibold">{project.title}</p>
-                    <p className="text-sm text-gray-600">{project.category} / {project.subCategory} / {project.subType}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => handleEdit(project)} className="rounded bg-gray-800 px-2 py-1 text-sm text-white">
-                      Edit
-                    </button>
-                    <button type="button" onClick={() => handleDelete(project.id)} className="rounded bg-red-600 px-2 py-1 text-sm text-white">
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        )})}
       </div>
     </div>
   );

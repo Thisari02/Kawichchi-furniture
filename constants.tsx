@@ -1,12 +1,5 @@
 
-import { Category, FilterCategory, Project, Stat, Subcategory, Testimonial, InstagramPost, ProcessStep, VideoShowcase } from './types';
-import { categories } from './src/data/categories';
-
-export const CATEGORY_FILTERS: FilterCategory[] = ['All', ...categories.map((cat) => cat.name)];
-export const CATEGORY_SUBCATEGORIES: Record<Category, Subcategory[]> = categories.reduce((acc, cat) => {
-  acc[cat.name] = cat.subCategories.map((sub) => sub.name);
-  return acc;
-}, {} as Record<Category, Subcategory[]>);
+import { Stat, Testimonial, InstagramPost, ProcessStep, VideoShowcase } from './types';
 
 export const COLORS = {
   primary: '#2C2C2C',
@@ -15,8 +8,6 @@ export const COLORS = {
   whatsapp: '#25D366',
   white: '#FFFFFF',
 };
-
-export const PROJECTS: Project[] = [];
 
 export const PROCESS_STEPS: ProcessStep[] = [
   {

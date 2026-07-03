@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Craftsmanship from './components/Craftsmanship';
 import Projects from './components/Projects';
+import ProjectsPage from './src/pages/Projects';
 import ProjectDetail from './components/ProjectDetail';
 import AdminPanel from './src/pages/AdminPanel';
 import VideoShowcase from './components/VideoShowcase';
@@ -39,7 +40,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<><About /><Contact /></>} />
           <Route path="/craftsmanship" element={<><Craftsmanship /><Projects /></>} />
-          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/showcase" element={<VideoShowcase />} />

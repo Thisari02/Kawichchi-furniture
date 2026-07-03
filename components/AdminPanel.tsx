@@ -1,15 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trash2, Edit2, Save, X } from 'lucide-react';
-import { CATEGORY_SUBCATEGORIES, PROJECTS } from '../constants';
 import { fetchProjects } from '../lib/projectApi';
 import { createProject, updateProjectData, deleteProjectData } from '../lib/adminApi';
 import type { Category, Project, Subcategory } from '../types';
+import { categories as categoryConfig } from '../src/data/categories';
 
-const categories: Category[] = ['Living Room', 'Bedroom', 'Office', 'Dining'];
+const categories: Category[] = categoryConfig.map((category) => category.name);
+const CATEGORY_SUBCATEGORIES: Record<string, Subcategory[]> = categoryConfig.reduce((acc, category) => {
+  acc[category.name] = category.subCategories.map((subCategory) => subCategory.name);
+  return acc;
+}, {} as Record<string, Subcategory[]>);
 
 const AdminPanel: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +28,7 @@ const AdminPanel: React.FC = () => {
     id: 0,
     title: '',
     category: 'Living Room',
-    subcategory: 'Sofa Collection',
+    subcategory: CATEGORY_SUBCATEGORIES['Living Room']?.[0] || '',
     location: '',
     materials: [],
     description: '',
@@ -49,7 +53,7 @@ const AdminPanel: React.FC = () => {
       id: nextId,
       title: '',
       category: 'Living Room',
-      subcategory: 'Sofa Collection',
+      subcategory: CATEGORY_SUBCATEGORIES['Living Room']?.[0] || '',
       location: '',
       materials: [],
       description: '',
