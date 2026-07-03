@@ -19,6 +19,42 @@ const initialForm: Project = {
   customizationNote: '',
 };
 
+function loadImage(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Failed to decode image.'));
+      img.src = String(reader.result || '');
+    };
+    reader.onerror = () => reject(new Error('Failed to read image file.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function compressImageToDataUrl(file: File): Promise<string> {
+  const image = await loadImage(file);
+  const maxDimension = 1600;
+  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+  const width = Math.max(1, Math.round(image.width * scale));
+  const height = Math.max(1, Math.round(image.height * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    throw new Error('Canvas is not available in this browser.');
+  }
+
+  ctx.drawImage(image, 0, 0, width, height);
+
+  // Use JPEG compression for more reliable upload sizes in serverless/live environments.
+  return canvas.toDataURL('image/jpeg', 0.82);
+}
+
 export default function AdminPanel() {
   const [form, setForm] = useState<Project>(initialForm);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -51,16 +87,7 @@ export default function AdminPanel() {
       return;
     }
 
-    const uploadedImages = await Promise.all(
-      files.map(
-        (file) =>
-          new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
-            reader.readAsDataURL(file);
-          })
-      )
-    );
+    const uploadedImages = await Promise.all(files.map((file) => compressImageToDataUrl(file)));
 
     setForm((prev) => ({
       ...prev,
@@ -70,6 +97,9 @@ export default function AdminPanel() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) {
+      return;
+    }
     setLoading(true);
 
     const url = editingId
@@ -78,11 +108,18 @@ export default function AdminPanel() {
 
     const method = editingId ? 'PUT' : 'POST';
 
-    await fetch(url, {
+    const saveResponse = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
+
+    if (!saveResponse.ok) {
+      const message = await saveResponse.text();
+      window.alert(message || 'Failed to save project.');
+      setLoading(false);
+      return;
+    }
 
     const res = await fetch(`${API_BASE}/api/admin/projects`);
     const data = await res.json();
@@ -226,7 +263,7 @@ export default function AdminPanel() {
           className="border p-2"
         />
 
-        <button className="bg-black text-white p-2">
+        <button className="bg-black text-white p-2 disabled:opacity-60" disabled={loading}>
           {editingId ? 'Update' : 'Create'}
         </button>
       </form>

@@ -42,6 +42,10 @@ const ProjectSchema = new mongoose.Schema(
 
 const Project = mongoose.model("Project", ProjectSchema);
 
+function escapeRegExp(value = "") {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // ========================
 // RESET DB
 // ========================
@@ -92,12 +96,35 @@ app.get("/api/projects", async (req, res) => {
 // ========================
 app.post("/api/admin/projects", async (req, res) => {
   try {
-    const project = new Project({
-      title: req.body.title,
+    const title = String(req.body.title || "").trim();
+    const category = String(req.body.category || "").trim();
+    const subCategory = String(req.body.subCategory || "").trim();
+    const subType = String(req.body.subType || "").trim();
 
-      category: req.body.category,
-      subCategory: req.body.subCategory,
-      subType: req.body.subType,
+    if (!title || !category || !subCategory || !subType) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const existing = await Project.findOne({
+      title: { $regex: new RegExp(`^${escapeRegExp(title)}$`, "i") },
+      category: { $regex: new RegExp(`^${escapeRegExp(category)}$`, "i") },
+      subCategory: { $regex: new RegExp(`^${escapeRegExp(subCategory)}$`, "i") },
+      subType: { $regex: new RegExp(`^${escapeRegExp(subType)}$`, "i") },
+    }).lean();
+
+    if (existing) {
+      return res.status(409).json({
+        error: "A similar project already exists.",
+        existingId: existing._id,
+      });
+    }
+
+    const project = new Project({
+      title,
+
+      category,
+      subCategory,
+      subType,
 
       location: req.body.location || "", // ✅ FIX
 

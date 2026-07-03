@@ -1,4 +1,4 @@
-import { addProject } from '../../lib/projectService';
+import { addProject, getProjects } from '../../lib/projectService';
 import type { Project } from '../../types';
 
 export default async function handler(req: any, res: any) {
@@ -22,6 +22,20 @@ export default async function handler(req: any, res: any) {
       if (!project.title || !project.category || !project.subCategory || !project.subType) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
+
+      const existingProjects = await getProjects();
+      const duplicate = existingProjects.find(
+        (item) =>
+          String(item.title || '').trim().toLowerCase() === String(project.title || '').trim().toLowerCase() &&
+          String(item.category || '').trim().toLowerCase() === String(project.category || '').trim().toLowerCase() &&
+          String(item.subCategory || '').trim().toLowerCase() === String(project.subCategory || '').trim().toLowerCase() &&
+          String(item.subType || '').trim().toLowerCase() === String(project.subType || '').trim().toLowerCase()
+      );
+
+      if (duplicate) {
+        return res.status(409).json({ error: 'A similar project already exists.' });
+      }
+
       const result = await addProject(project);
       return res.status(201).json(result);
     } catch (error) {

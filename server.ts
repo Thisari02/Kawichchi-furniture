@@ -53,6 +53,19 @@ app.post('/api/admin/projects', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    const existingProjects = await getProjects();
+    const duplicate = existingProjects.find(
+      (item) =>
+        String(item.title || '').trim().toLowerCase() === String(project.title || '').trim().toLowerCase() &&
+        String(item.category || '').trim().toLowerCase() === String(project.category || '').trim().toLowerCase() &&
+        String(item.subCategory || '').trim().toLowerCase() === String(project.subCategory || '').trim().toLowerCase() &&
+        String(item.subType || '').trim().toLowerCase() === String(project.subType || '').trim().toLowerCase()
+    );
+
+    if (duplicate) {
+      return res.status(409).json({ error: 'A similar project already exists.' });
+    }
+
     const normalizedProject = {
       ...project,
       id: project.id ?? Date.now(),
