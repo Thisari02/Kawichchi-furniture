@@ -59,6 +59,7 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [message, setMessage] = useState<string>('');
 
   const subCategories =
     categories.find((c) => c.name === form.category)?.subCategories || [];
@@ -66,11 +67,25 @@ export default function AdminPanel() {
   const subTypes =
     subCategories.find((s) => s.name === form.subCategory)?.subTypes || [];
 
+  const loadProjects = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/projects`, { cache: 'no-store' });
+      const data = await res.json();
+      const normalized = Array.isArray(data) ? data : [];
+      normalized.sort((a: any, b: any) => {
+        const aTime = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTime - aTime;
+      });
+      setProjects(normalized);
+    } catch {
+      setMessage('Unable to load projects. Please check API connection.');
+    }
+  };
+
   // Load projects
   useEffect(() => {
-    fetch(`${API_BASE}/api/admin/projects`)
-      .then((res) => res.json())
-      .then(setProjects);
+    void loadProjects();
   }, []);
 
   const handleChange = (
@@ -98,6 +113,7 @@ export default function AdminPanel() {
     if (loading) {
       return;
     }
+    setMessage('');
     setLoading(true);
 
     const url = editingId
@@ -119,12 +135,10 @@ export default function AdminPanel() {
       return;
     }
 
-    const res = await fetch(`${API_BASE}/api/admin/projects`);
-    const data = await res.json();
-
-    setProjects(data);
+    await loadProjects();
     setForm(initialForm);
     setEditingId(null);
+    setMessage(editingId ? 'Project updated successfully.' : 'Project created successfully.');
     setLoading(false);
   };
 
@@ -134,11 +148,13 @@ export default function AdminPanel() {
   };
 
   const handleDelete = async (id: string | number) => {
+    setMessage('');
     await fetch(`${API_BASE}/api/admin/projects/${id}`, {
       method: 'DELETE',
     });
 
-    setProjects(projects.filter((p: any) => String(p._id ?? p.id) !== String(id)));
+    await loadProjects();
+    setMessage('Project deleted successfully.');
   };
 
   const moveProject = (from: number, to: number) => {
@@ -154,6 +170,12 @@ export default function AdminPanel() {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
+
+      {message ? (
+        <p className="mb-4 rounded border border-[#D4AF37]/40 bg-[#F5F1EA] px-3 py-2 text-sm text-[#2C2C2C]">
+          {message}
+        </p>
+      ) : null}
 
       {/* FORM */}
       <form onSubmit={handleSubmit} className="grid gap-3 max-w-xl">

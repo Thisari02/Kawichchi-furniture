@@ -92,6 +92,33 @@ app.get("/api/projects", async (req, res) => {
 });
 
 // ========================
+// GET ADMIN PROJECTS
+// ========================
+app.get("/api/admin/projects", async (req, res) => {
+  try {
+    const projects = await Project.find({}).lean();
+
+    const normalized = projects.map((p) => ({
+      _id: p._id,
+      title: p.title,
+      category: p.category,
+      subCategory: p.subCategory,
+      subType: p.subType,
+      location: p.location || "",
+      images: p.images || [],
+      description: p.description || "",
+      materials: p.materials || [],
+      customizationNote: p.customizationNote || "",
+      createdAt: p.createdAt,
+    }));
+
+    res.json(normalized);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================
 // CREATE PROJECT
 // ========================
 app.post("/api/admin/projects", async (req, res) => {
