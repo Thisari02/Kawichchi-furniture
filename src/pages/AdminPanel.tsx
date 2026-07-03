@@ -144,7 +144,14 @@ export default function AdminPanel() {
   };
 
   const handleEdit = (p: any) => {
-    setForm(p);
+    setForm({
+      ...initialForm,
+      ...p,
+      images: Array.isArray(p?.images) ? p.images : [],
+      description: p?.description || '',
+      customizationNote: p?.customizationNote || '',
+      location: p?.location || '',
+    });
     setEditingId(String(p._id ?? p.id ?? ''));
   };
 
@@ -245,7 +252,7 @@ export default function AdminPanel() {
 
         <textarea
           name="description"
-          value={form.description}
+          value={form.description || ''}
           onChange={handleChange}
           placeholder="Description"
           className="border p-2"
@@ -286,7 +293,7 @@ export default function AdminPanel() {
 
         <input
           name="customizationNote"
-          value={form.customizationNote}
+          value={form.customizationNote || ''}
           onChange={handleChange}
           placeholder="Customization Note"
           className="border p-2"
