@@ -5,6 +5,7 @@ export interface Project {
   category: string;
   subCategory: string;
   subType: string;
+  location?: string;
   images: string[];
   description?: string;
   customizationNote?: string;

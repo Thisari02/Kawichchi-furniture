@@ -46,6 +46,10 @@ function escapeRegExp(value = "") {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function normalizeText(value) {
+  return String(value || "").trim();
+}
+
 // ========================
 // RESET DB
 // ========================
@@ -123,10 +127,11 @@ app.get("/api/admin/projects", async (req, res) => {
 // ========================
 app.post("/api/admin/projects", async (req, res) => {
   try {
-    const title = String(req.body.title || "").trim();
-    const category = String(req.body.category || "").trim();
-    const subCategory = String(req.body.subCategory || "").trim();
-    const subType = String(req.body.subType || "").trim();
+    const title = normalizeText(req.body.title);
+    const category = normalizeText(req.body.category);
+    const subCategory = normalizeText(req.body.subCategory);
+    const subType = normalizeText(req.body.subType);
+    const location = normalizeText(req.body.location);
 
     if (!title || !category || !subCategory || !subType) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -153,7 +158,7 @@ app.post("/api/admin/projects", async (req, res) => {
       subCategory,
       subType,
 
-      location: req.body.location || "", // ✅ FIX
+      location,
 
       images: Array.isArray(req.body.images) ? req.body.images : [],
 
@@ -177,15 +182,37 @@ app.post("/api/admin/projects", async (req, res) => {
 // ========================
 app.put("/api/admin/projects/:id", async (req, res) => {
   try {
+    const title = normalizeText(req.body.title);
+    const category = normalizeText(req.body.category);
+    const subCategory = normalizeText(req.body.subCategory);
+    const subType = normalizeText(req.body.subType);
+    const location = normalizeText(req.body.location);
+
+    if (!title || !category || !subCategory || !subType) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const duplicate = await Project.findOne({
+      _id: { $ne: req.params.id },
+      title: { $regex: new RegExp(`^${escapeRegExp(title)}$`, "i") },
+      category: { $regex: new RegExp(`^${escapeRegExp(category)}$`, "i") },
+      subCategory: { $regex: new RegExp(`^${escapeRegExp(subCategory)}$`, "i") },
+      subType: { $regex: new RegExp(`^${escapeRegExp(subType)}$`, "i") },
+    }).lean();
+
+    if (duplicate) {
+      return res.status(409).json({ error: "A similar project already exists." });
+    }
+
     const updated = await Project.findByIdAndUpdate(
       req.params.id,
       {
-        title: req.body.title,
-        category: req.body.category,
-        subCategory: req.body.subCategory,
-        subType: req.body.subType,
+        title,
+        category,
+        subCategory,
+        subType,
 
-        location: req.body.location || "", // ✅ FIX
+        location,
 
         images: Array.isArray(req.body.images) ? req.body.images : [],
 

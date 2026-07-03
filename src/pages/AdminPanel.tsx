@@ -12,6 +12,7 @@ const initialForm: Project = {
   category: '',
   subCategory: '',
   subType: '',
+  location: '',
   images: [],
   description: '',
   customizationNote: '',
@@ -250,6 +251,14 @@ export default function AdminPanel() {
           className="border p-2"
         />
 
+        <input
+          name="location"
+          value={form.location || ''}
+          onChange={handleChange}
+          placeholder="Location"
+          className="border p-2"
+        />
+
         <label className="text-sm text-gray-600">Upload images</label>
         <input
           type="file"
@@ -318,6 +327,7 @@ export default function AdminPanel() {
               <p className="text-sm">
                 {p.category} → {p.subCategory} → {p.subType}
               </p>
+              <p className="text-xs text-gray-500">{p.location || 'Location not set'}</p>
             </div>
 
             <div className="flex gap-2">
