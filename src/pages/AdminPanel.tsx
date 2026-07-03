@@ -4,9 +4,7 @@ import type { Project } from '../types/project';
 
 const API_BASE =
   import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV
-    ? 'http://localhost:4000'
-    : 'https://kawichchi-furniture.onrender.com');
+  'https://kawichchi-furniture.onrender.com';
 
 const initialForm: Project = {
   id: undefined,
