@@ -334,7 +334,9 @@ export default function AdminPanel() {
               <p className="text-sm">
                 {p.category} → {p.subCategory} → {p.subType}
               </p>
-              <p className="text-xs text-gray-500">{p.location || 'Location not set'}</p>
+              <p className="text-xs text-gray-600">
+                <span className="font-semibold">Location:</span> {p.location || 'Not set'}
+              </p>
             </div>
 
             <div className="flex gap-2">

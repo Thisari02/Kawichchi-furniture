@@ -26,6 +26,9 @@ export const premiumCardTitle = 'text-xl font-semibold text-[#2C2C2C]';
 export const premiumCardMeta =
   'mt-1 text-xs uppercase tracking-[0.22em] text-[#8A6D2F]';
 
+export const premiumCardLocation =
+  'mt-2 text-sm font-medium text-[#2C2C2C]';
+
 export const premiumCardDescription =
   'mt-3 text-sm leading-relaxed text-[#2C2C2C]/80';
 

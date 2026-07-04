@@ -12,6 +12,7 @@ import {
   premiumCardBadge,
   premiumCardTitle,
   premiumCardMeta,
+  premiumCardLocation,
   premiumCardDescription,
   premiumCardNote,
   premiumCardAction,
@@ -65,6 +66,7 @@ export default function ProjectGallery({ projects }: Props) {
         p.category,
         p.subCategory,
         p.subType,
+        p.location || '',
         p.description || '',
         p.customizationNote || '',
       ]
@@ -274,6 +276,10 @@ export default function ProjectGallery({ projects }: Props) {
 
                 <p className={premiumCardMeta}>
                   {project.category} • {project.subCategory} • {project.subType}
+                </p>
+
+                <p className={premiumCardLocation}>
+                  Location: {project.location || 'Not specified'}
                 </p>
 
                 {project.description && (
