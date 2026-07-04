@@ -50,6 +50,15 @@ function normalizeText(value) {
   return String(value || "").trim();
 }
 
+function signatureMatchQuery({ category, subCategory, subType, location }) {
+  return {
+    category: { $regex: new RegExp(`^${escapeRegExp(normalizeText(category))}$`, "i") },
+    subCategory: { $regex: new RegExp(`^${escapeRegExp(normalizeText(subCategory))}$`, "i") },
+    subType: { $regex: new RegExp(`^${escapeRegExp(normalizeText(subType))}$`, "i") },
+    location: { $regex: new RegExp(`^${escapeRegExp(normalizeText(location))}$`, "i") },
+  };
+}
+
 // ========================
 // RESET DB
 // ========================
@@ -137,12 +146,9 @@ app.post("/api/admin/projects", async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const existing = await Project.findOne({
-      title: { $regex: new RegExp(`^${escapeRegExp(title)}$`, "i") },
-      category: { $regex: new RegExp(`^${escapeRegExp(category)}$`, "i") },
-      subCategory: { $regex: new RegExp(`^${escapeRegExp(subCategory)}$`, "i") },
-      subType: { $regex: new RegExp(`^${escapeRegExp(subType)}$`, "i") },
-    }).lean();
+    const existing = await Project.findOne(
+      signatureMatchQuery({ category, subCategory, subType, location })
+    ).lean();
 
     if (existing) {
       return res.status(409).json({
@@ -194,10 +200,7 @@ app.put("/api/admin/projects/:id", async (req, res) => {
 
     const duplicate = await Project.findOne({
       _id: { $ne: req.params.id },
-      title: { $regex: new RegExp(`^${escapeRegExp(title)}$`, "i") },
-      category: { $regex: new RegExp(`^${escapeRegExp(category)}$`, "i") },
-      subCategory: { $regex: new RegExp(`^${escapeRegExp(subCategory)}$`, "i") },
-      subType: { $regex: new RegExp(`^${escapeRegExp(subType)}$`, "i") },
+      ...signatureMatchQuery({ category, subCategory, subType, location }),
     }).lean();
 
     if (duplicate) {

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env.local', override: true });
 
 const { getProjects, getProjectById, addProject, updateProject, deleteProject } = await import(
   './lib/projectService.ts'
@@ -12,6 +12,15 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
+
+const normalize = (value: unknown) => String(value || '').trim().toLowerCase();
+const projectSignature = (project: any) =>
+  [
+    normalize(project?.category),
+    normalize(project?.subCategory ?? project?.subcategory),
+    normalize(project?.subType),
+    normalize(project?.location),
+  ].join('|');
 
 app.get('/api/projects', async (req, res) => {
   try {
@@ -54,12 +63,9 @@ app.post('/api/admin/projects', async (req, res) => {
     }
 
     const existingProjects = await getProjects();
+    const incomingSignature = projectSignature(project);
     const duplicate = existingProjects.find(
-      (item) =>
-        String(item.title || '').trim().toLowerCase() === String(project.title || '').trim().toLowerCase() &&
-        String(item.category || '').trim().toLowerCase() === String(project.category || '').trim().toLowerCase() &&
-        String(item.subCategory || '').trim().toLowerCase() === String(project.subCategory || '').trim().toLowerCase() &&
-        String(item.subType || '').trim().toLowerCase() === String(project.subType || '').trim().toLowerCase()
+      (item) => projectSignature(item) === incomingSignature
     );
 
     if (duplicate) {
@@ -69,6 +75,7 @@ app.post('/api/admin/projects', async (req, res) => {
     const normalizedProject = {
       ...project,
       id: project.id ?? Date.now(),
+      location: project.location ?? '',
       images: Array.isArray(project.images) ? project.images : [],
       description: project.description ?? '',
       customizationNote: project.customizationNote ?? '',
@@ -88,6 +95,16 @@ app.put('/api/admin/projects/:id', async (req, res) => {
     if (Number.isNaN(id)) {
       return res.status(400).json({ error: 'Invalid project id' });
     }
+    const existingProjects = await getProjects();
+    const incomingSignature = projectSignature(req.body);
+    const duplicate = existingProjects.find(
+      (item) => item.id !== id && projectSignature(item) === incomingSignature
+    );
+
+    if (duplicate) {
+      return res.status(409).json({ error: 'A similar project already exists.' });
+    }
+
     const updated = await updateProject(id, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Project not found' });

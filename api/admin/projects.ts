@@ -1,6 +1,15 @@
 import { addProject, getProjects } from '../../lib/projectService';
 import type { Project } from '../../types';
 
+const normalize = (value: unknown) => String(value || '').trim().toLowerCase();
+const projectSignature = (project: any) =>
+  [
+    normalize(project?.category),
+    normalize(project?.subCategory ?? project?.subcategory),
+    normalize(project?.subType),
+    normalize(project?.location),
+  ].join('|');
+
 export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
@@ -24,12 +33,9 @@ export default async function handler(req: any, res: any) {
       }
 
       const existingProjects = await getProjects();
+      const incomingSignature = projectSignature(project);
       const duplicate = existingProjects.find(
-        (item) =>
-          String(item.title || '').trim().toLowerCase() === String(project.title || '').trim().toLowerCase() &&
-          String(item.category || '').trim().toLowerCase() === String(project.category || '').trim().toLowerCase() &&
-          String(item.subCategory || '').trim().toLowerCase() === String(project.subCategory || '').trim().toLowerCase() &&
-          String(item.subType || '').trim().toLowerCase() === String(project.subType || '').trim().toLowerCase()
+        (item) => projectSignature(item) === incomingSignature
       );
 
       if (duplicate) {

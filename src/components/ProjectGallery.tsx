@@ -2,7 +2,21 @@ import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { categories } from '../data/categories';
 import type { Project } from '../types/project';
-import { premiumButton, premiumActive, premiumCard } from '../styles/premium';
+import {
+  premiumButton,
+  premiumActive,
+  premiumCard,
+  premiumCardBorder,
+  premiumCardImage,
+  premiumCardOverlay,
+  premiumCardBadge,
+  premiumCardTitle,
+  premiumCardMeta,
+  premiumCardDescription,
+  premiumCardNote,
+  premiumCardAction,
+  premiumCardImageCount,
+} from '../styles/premium';
 
 interface Props {
   projects: Project[];
@@ -65,9 +79,8 @@ export default function ProjectGallery({ projects }: Props) {
     });
   }, [projects, selectedCategory, selectedSubCategory, selectedSubType, searchTerm]);
 
-  const featuredProjects = useMemo(() => {
-    return filteredProjects.slice(0, 3);
-  }, [filteredProjects]);
+  const getProjectKey = (project: Project, index: number) =>
+    String(project._id || project.id || `${project.title}-${index}`);
 
   const selectedZoomProject =
     zoomProjectIndex !== null ? filteredProjects[zoomProjectIndex] : null;
@@ -226,63 +239,19 @@ export default function ProjectGallery({ projects }: Props) {
         )}
       </motion.div>
 
-      {featuredProjects.length > 0 && (
-        <section className="mx-auto mb-10 max-w-7xl">
-          <motion.h4
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-4 text-xl font-semibold"
-          >
-            Featured Projects
-          </motion.h4>
-          <div className="grid gap-4 md:grid-cols-3">
-            {featuredProjects.map((project, index) => (
-              <motion.button
-                key={`featured-${project._id || project.id || index}`}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.06 }}
-                onClick={() => {
-                  const globalIndex = filteredProjects.findIndex(
-                    (p) => (p._id || p.id) === (project._id || project.id)
-                  );
-                  if (globalIndex >= 0) handleOpenZoom(globalIndex, 0);
-                }}
-                className="group relative overflow-hidden rounded-2xl border border-[#D4AF37]/20"
-              >
-                <img
-                  src={project.images?.[0] || '/images/placeholder.jpg'}
-                  alt={project.title}
-                  className="h-52 w-full object-cover transition duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                <div className="absolute bottom-3 left-3 right-3 text-left text-white">
-                  <p className="text-xs uppercase tracking-[0.2em] text-[#D4AF37]">
-                    Featured
-                  </p>
-                  <p className="font-semibold">{project.title}</p>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* PROJECT GRID */}
       <motion.div layout className="mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence mode="popLayout">
           {filteredProjects.map((project, index) => (
             <motion.article
-              key={project._id || project.id || `${project.title}-${index}`}
+              key={getProjectKey(project, index)}
               layout
               initial={{ opacity: 0, y: 22, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.35 }}
               whileHover={{ y: -6 }}
-              className={`${premiumCard} border border-[#D4AF37]/20`}
+              className={`${premiumCard} ${premiumCardBorder}`}
             >
               {/* IMAGE */}
               <button
@@ -292,29 +261,29 @@ export default function ProjectGallery({ projects }: Props) {
                 <img
                   src={project.images?.[0] || '/images/placeholder.jpg'}
                   alt={project.title}
-                  className="h-64 w-full object-cover transition duration-700 group-hover:scale-110"
+                  className={premiumCardImage}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-90" />
-                <span className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-[#D4AF37]">
+                <div className={premiumCardOverlay} />
+                <span className={premiumCardBadge}>
                   View Gallery
                 </span>
               </button>
 
               <div className="p-5">
-                <h3 className="text-xl font-semibold text-[#2C2C2C]">{project.title}</h3>
+                <h3 className={premiumCardTitle}>{project.title}</h3>
 
-                <p className="mt-1 text-xs uppercase tracking-[0.22em] text-[#8A6D2F]">
+                <p className={premiumCardMeta}>
                   {project.category} • {project.subCategory} • {project.subType}
                 </p>
 
                 {project.description && (
-                  <p className="mt-3 text-sm leading-relaxed text-[#2C2C2C]/80">
+                  <p className={premiumCardDescription}>
                     {project.description}
                   </p>
                 )}
 
                 {project.customizationNote && (
-                  <p className="mt-3 rounded-lg bg-[#D4AF37]/12 px-3 py-2 text-sm text-[#7A5D1E]">
+                  <p className={premiumCardNote}>
                     ✨ {project.customizationNote}
                   </p>
                 )}
@@ -322,11 +291,11 @@ export default function ProjectGallery({ projects }: Props) {
                 <div className="mt-4 flex items-center gap-3">
                   <button
                     onClick={() => handleOpenZoom(index, 0)}
-                    className="rounded-full bg-black px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white transition hover:bg-[#1A1A1A]"
+                    className={premiumCardAction}
                   >
                     Explore
                   </button>
-                  <span className="text-xs text-[#2C2C2C]/60">
+                  <span className={premiumCardImageCount}>
                     {project.images?.length || 0} images
                   </span>
                 </div>
