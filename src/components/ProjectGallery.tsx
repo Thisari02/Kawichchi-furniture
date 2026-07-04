@@ -271,6 +271,25 @@ export default function ProjectGallery({ projects }: Props) {
                 </span>
               </button>
 
+              {(project.images?.length || 0) > 1 && (
+                <div className="flex gap-2 overflow-x-auto px-4 pt-3">
+                  {project.images.slice(0, 6).map((img, thumbIdx) => (
+                    <button
+                      key={`${img}-${thumbIdx}`}
+                      type="button"
+                      onClick={() => handleOpenZoom(index, thumbIdx)}
+                      className="h-12 w-16 flex-none overflow-hidden rounded border border-[#D4AF37]/30 transition hover:border-[#D4AF37]"
+                    >
+                      <img
+                        src={img}
+                        alt={`${project.title}-thumb-${thumbIdx + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="p-5">
                 <h3 className={premiumCardTitle}>{project.title}</h3>
 

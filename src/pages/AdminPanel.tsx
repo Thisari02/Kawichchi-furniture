@@ -61,6 +61,7 @@ export default function AdminPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [message, setMessage] = useState<string>('');
+  const [imageUrlInput, setImageUrlInput] = useState<string>('');
 
   const subCategories =
     categories.find((c) => c.name === form.category)?.subCategories || [];
@@ -109,6 +110,38 @@ export default function AdminPanel() {
     }));
   };
 
+  const parseImageUrls = (raw: string) => {
+    return raw
+      .split(/[\n,]/g)
+      .map((url) => url.trim())
+      .filter(Boolean);
+  };
+
+  const handleAddImageUrls = () => {
+    const parsed = parseImageUrls(imageUrlInput);
+
+    if (!parsed.length) {
+      setMessage('No valid image URLs to add.');
+      return;
+    }
+
+    setForm((prev) => {
+      const existing = Array.isArray(prev.images) ? prev.images : [];
+      const unique = [...new Set([...existing, ...parsed])];
+      return { ...prev, images: unique };
+    });
+
+    setImageUrlInput('');
+    setMessage(`${parsed.length} image URL(s) added.`);
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      images: (prev.images || []).filter((_, i) => i !== index),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) {
@@ -138,6 +171,7 @@ export default function AdminPanel() {
 
     await loadProjects();
     setForm(initialForm);
+    setImageUrlInput('');
     setEditingId(null);
     setMessage(editingId ? 'Project updated successfully.' : 'Project created successfully.');
     setLoading(false);
@@ -152,6 +186,7 @@ export default function AdminPanel() {
       customizationNote: p?.customizationNote || '',
       location: p?.location || '',
     });
+    setImageUrlInput('');
     setEditingId(String(p._id ?? p.id ?? ''));
   };
 
@@ -275,21 +310,46 @@ export default function AdminPanel() {
           className="border p-2"
         />
 
-        <input
-          name="images"
-          value={(form.images || []).join(', ')}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              images: e.target.value
-                .split(',')
-                .map((img) => img.trim())
-                .filter(Boolean),
-            })
-          }
-          placeholder="Image URLs / base64 (comma separated)"
-          className="border p-2"
-        />
+        <div className="rounded border p-2">
+          <p className="mb-2 text-xs text-gray-600">
+            Paste multiple image URLs separated by commas or new lines.
+          </p>
+          <textarea
+            value={imageUrlInput}
+            onChange={(e) => setImageUrlInput(e.target.value)}
+            placeholder="https://.../image1.jpg, https://.../image2.jpg"
+            className="mb-2 min-h-[80px] w-full border p-2"
+          />
+          <button
+            type="button"
+            onClick={handleAddImageUrls}
+            className="rounded-full border border-[#D4AF37]/40 px-3 py-1 text-xs font-medium text-[#7A5D1E]"
+          >
+            Add Image URLs
+          </button>
+        </div>
+
+        {(form.images || []).length > 0 && (
+          <div className="rounded border p-2">
+            <p className="mb-2 text-xs text-gray-600">
+              Added images ({form.images?.length || 0})
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {(form.images || []).map((img, idx) => (
+                <div key={`${img}-${idx}`} className="relative overflow-hidden rounded border">
+                  <img src={img} alt={`admin-preview-${idx + 1}`} className="h-24 w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(idx)}
+                    className="absolute right-1 top-1 rounded bg-black/70 px-2 py-1 text-xs text-white"
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <input
           name="customizationNote"
