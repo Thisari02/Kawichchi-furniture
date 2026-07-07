@@ -13,6 +13,16 @@ app.use(cors());
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
+app.get('/', async (req, res) => {
+  return res.status(200).send(
+    'Kawichchi API server is running. Use /api/projects for the public data API and /api/admin/projects for admin operations.'
+  );
+});
+
+app.get('/health', async (req, res) => {
+  return res.status(200).json({ ok: true });
+});
+
 const normalize = (value: unknown) => String(value || '').trim().toLowerCase();
 const projectSignature = (project: any) =>
   [

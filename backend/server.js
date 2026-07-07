@@ -11,6 +11,16 @@ app.use(cors());
 app.use(express.json({ limit: "200mb" }));
 app.use(express.urlencoded({ extended: true, limit: "200mb" }));
 
+app.get("/", (req, res) => {
+  res.status(200).send(
+    "Kawichchi backend is running. Use /api/projects for the public data API and /api/admin/projects for admin operations."
+  );
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGODB_URI)
