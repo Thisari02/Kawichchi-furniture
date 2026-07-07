@@ -116,17 +116,20 @@ export default function ProjectGallery({ projects }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F1EA] p-6 text-[#2C2C2C]">
+    <div className="min-h-screen p-4 sm:p-6 text-[var(--lux-text)]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mx-auto mb-8 max-w-7xl rounded-2xl border border-[#D4AF37]/20 bg-white/90 p-5 shadow-lg backdrop-blur"
+        className="mx-auto mb-8 max-w-7xl rounded-3xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/80 p-5 sm:p-6 shadow-[var(--lux-shadow-soft)] backdrop-blur"
       >
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-          <h3 className="text-lg font-semibold tracking-wide text-[#2C2C2C]">
-            Live Filter Bar
-          </h3>
+          <div>
+            <p className="lux-tag mb-2">Project Library</p>
+            <h3 className="text-xl sm:text-2xl font-semibold tracking-wide text-[var(--lux-text)]">
+              Live Filter Bar
+            </h3>
+          </div>
           <button
             onClick={() => {
               setSelectedCategory('');
@@ -134,7 +137,7 @@ export default function ProjectGallery({ projects }: Props) {
               setSelectedSubType('');
               setSearchTerm('');
             }}
-            className="rounded-full border border-[#2C2C2C]/20 px-4 py-2 text-sm font-medium transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
+            className="rounded-full border border-[var(--lux-border)] px-4 py-2 text-xs sm:text-sm font-medium tracking-[0.14em] uppercase transition hover:border-[var(--lux-bronze)] hover:text-[var(--lux-bronze)]"
           >
             Clear Filters
           </button>
@@ -144,7 +147,7 @@ export default function ProjectGallery({ projects }: Props) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search projects, category, subtype..."
-          className="mb-4 w-full rounded-full border border-[#D4AF37]/30 bg-white px-4 py-2 text-sm outline-none transition focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/25"
+          className="mb-5 w-full rounded-full border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 px-4 py-3 text-sm text-[var(--lux-text)] outline-none transition focus:border-[var(--lux-bronze)] focus:ring-2 focus:ring-[var(--lux-bronze)]/30"
         />
 
         {/* CATEGORY */}
@@ -155,10 +158,10 @@ export default function ProjectGallery({ projects }: Props) {
               setSelectedSubCategory('');
               setSelectedSubType('');
             }}
-            className={`${premiumButton} ${selectedCategory === '' ? premiumActive : 'bg-white'}`}
+            className={`${premiumButton} ${selectedCategory === '' ? premiumActive : ''}`}
           >
             All
-            <span className="ml-2 rounded-full bg-[#D4AF37]/15 px-2 py-0.5 text-xs text-[#2C2C2C]">
+            <span className="ml-2 rounded-full bg-[var(--lux-bronze)]/20 px-2 py-0.5 text-xs text-[var(--lux-text)]">
               {projects.length}
             </span>
           </button>
@@ -173,11 +176,11 @@ export default function ProjectGallery({ projects }: Props) {
             className={`${premiumButton} ${
               selectedCategory === cat.name
                 ? premiumActive
-                : 'bg-white'
+                : ''
             }`}
           >
             {cat.name}
-            <span className="ml-2 rounded-full bg-[#D4AF37]/15 px-2 py-0.5 text-xs text-[#2C2C2C]">
+            <span className="ml-2 rounded-full bg-[var(--lux-bronze)]/20 px-2 py-0.5 text-xs text-[var(--lux-text)]">
               {categoryCounts[cat.name] || 0}
             </span>
           </button>
@@ -192,7 +195,7 @@ export default function ProjectGallery({ projects }: Props) {
                 setSelectedSubCategory('');
                 setSelectedSubType('');
               }}
-              className={`${premiumButton} ${selectedSubCategory === '' ? premiumActive : 'bg-white'}`}
+              className={`${premiumButton} ${selectedSubCategory === '' ? premiumActive : ''}`}
             >
               All Subcategories
             </button>
@@ -206,7 +209,7 @@ export default function ProjectGallery({ projects }: Props) {
                 className={`${premiumButton} ${
                   selectedSubCategory === sub.name
                     ? premiumActive
-                    : 'bg-white'
+                    : ''
                 }`}
               >
                 {sub.name}
@@ -220,7 +223,7 @@ export default function ProjectGallery({ projects }: Props) {
           <div className="mb-1 flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedSubType('')}
-              className={`${premiumButton} ${selectedSubType === '' ? premiumActive : 'bg-white'}`}
+              className={`${premiumButton} ${selectedSubType === '' ? premiumActive : ''}`}
             >
               All Subtypes
             </button>
@@ -231,7 +234,7 @@ export default function ProjectGallery({ projects }: Props) {
                 className={`${premiumButton} ${
                   selectedSubType === type
                     ? premiumActive
-                    : 'bg-white'
+                    : ''
                 }`}
               >
                 {type}
@@ -252,7 +255,7 @@ export default function ProjectGallery({ projects }: Props) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.35 }}
-              whileHover={{ y: -6 }}
+              whileHover={{ y: -8, scale: 1.005 }}
               className={`${premiumCard} ${premiumCardBorder}`}
             >
               {/* IMAGE */}
@@ -263,6 +266,7 @@ export default function ProjectGallery({ projects }: Props) {
                 <img
                   src={project.images?.[0] || '/images/placeholder.jpg'}
                   alt={project.title}
+                  loading="lazy"
                   className={premiumCardImage}
                 />
                 <div className={premiumCardOverlay} />
@@ -278,7 +282,7 @@ export default function ProjectGallery({ projects }: Props) {
                       key={`${img}-${thumbIdx}`}
                       type="button"
                       onClick={() => handleOpenZoom(index, thumbIdx)}
-                      className="h-12 w-16 flex-none overflow-hidden rounded border border-[#D4AF37]/30 transition hover:border-[#D4AF37]"
+                      className="h-12 w-16 flex-none overflow-hidden rounded border border-[var(--lux-border)] transition hover:border-[var(--lux-bronze)]"
                     >
                       <img
                         src={img}
@@ -330,6 +334,13 @@ export default function ProjectGallery({ projects }: Props) {
         </AnimatePresence>
       </motion.div>
 
+      {filteredProjects.length === 0 && (
+        <div className="mx-auto mt-8 max-w-7xl rounded-2xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/70 p-8 text-center">
+          <p className="text-lg text-[var(--lux-text)]">No matching projects found.</p>
+          <p className="text-sm text-[var(--lux-text-soft)] mt-2">Try clearing filters or broadening your search.</p>
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedZoomProject && zoomImages.length > 0 && (
           <motion.div
@@ -347,7 +358,7 @@ export default function ProjectGallery({ projects }: Props) {
               className="w-full max-w-6xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-black">
+              <div className="relative overflow-hidden rounded-2xl border border-[var(--lux-border)] bg-black">
                 <img
                   src={zoomImages[zoomImageIndex]}
                   alt={selectedZoomProject.title}
@@ -356,7 +367,7 @@ export default function ProjectGallery({ projects }: Props) {
 
                 <button
                   onClick={closeZoom}
-                  className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1 text-sm text-white"
+                  className="absolute right-4 top-4 rounded-full border border-[var(--lux-border)] bg-black/60 px-3 py-1 text-sm text-white"
                 >
                   Close
                 </button>
@@ -365,13 +376,13 @@ export default function ProjectGallery({ projects }: Props) {
                   <>
                     <button
                       onClick={goPrevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/60 px-3 py-2 text-white"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-[var(--lux-border)] bg-black/60 px-3 py-2 text-white"
                     >
                       ‹
                     </button>
                     <button
                       onClick={goNextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/60 px-3 py-2 text-white"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-[var(--lux-border)] bg-black/60 px-3 py-2 text-white"
                     >
                       ›
                     </button>

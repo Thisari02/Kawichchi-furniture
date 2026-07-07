@@ -226,7 +226,7 @@ app.put("/api/admin/projects/:id", async (req, res) => {
 
         customizationNote: req.body.customizationNote || "",
       },
-      { new: true, runValidators: true }
+      { returnDocument: "after", runValidators: true }
     );
 
     if (!updated) {

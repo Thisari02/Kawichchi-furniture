@@ -12,15 +12,18 @@
     "normalize-projects": "tsx scripts/normalizeProjects.ts"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.6.1",
     "@vercel/functions": "^3.7.4",
     "dotenv": "^16.5.0",
     "framer-motion": "^12.31.0",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.563.0",
     "mongodb": "^7.3.0",
     "mongoose": "^9.7.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.15.1"
+    "react-router-dom": "^7.15.1",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

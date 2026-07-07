@@ -211,24 +211,36 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
+    <div className="section-shell px-4 sm:px-6 bg-transparent text-[var(--lux-text)]">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="lux-tag mb-3">Management</p>
+            <h2 className="text-4xl md:text-5xl font-serif lux-section-title">Admin Panel</h2>
+            <p className="mt-3 max-w-2xl text-[var(--lux-text-soft)]">
+              Manage project listings with the same premium presentation system used on the public site.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/80 px-4 py-3 text-sm text-[var(--lux-text-soft)] shadow-[var(--lux-shadow-soft)]">
+            Drag projects to reorder, edit content, and keep the gallery flow curated.
+          </div>
+        </div>
 
       {message ? (
-        <p className="mb-4 rounded border border-[#D4AF37]/40 bg-[#F5F1EA] px-3 py-2 text-sm text-[#2C2C2C]">
+        <p className="mb-6 rounded-2xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/80 px-4 py-3 text-sm text-[var(--lux-text)] shadow-[var(--lux-shadow-soft)]">
           {message}
         </p>
       ) : null}
 
       {/* FORM */}
-      <form onSubmit={handleSubmit} className="grid gap-3 max-w-xl">
+      <form onSubmit={handleSubmit} className="grid gap-4 max-w-2xl lux-card p-5 md:p-6 mb-10">
 
         <input
           name="title"
           placeholder="Title"
           value={form.title}
           onChange={handleChange}
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         />
 
         {/* CATEGORY */}
@@ -243,7 +255,7 @@ export default function AdminPanel() {
               subType: '',
             })
           }
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         >
           <option value="">Select Category</option>
           {categories.map((c) => (
@@ -260,7 +272,7 @@ export default function AdminPanel() {
           onChange={(e) =>
             setForm({ ...form, subCategory: e.target.value, subType: '' })
           }
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         >
           <option value="">Select SubCategory</option>
           {subCategories.map((s) => (
@@ -275,7 +287,7 @@ export default function AdminPanel() {
           name="subType"
           value={form.subType}
           onChange={handleChange}
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         >
           <option value="">Select SubType</option>
           {subTypes.map((t) => (
@@ -290,7 +302,7 @@ export default function AdminPanel() {
           value={form.description || ''}
           onChange={handleChange}
           placeholder="Description"
-          className="border p-2"
+          className="min-h-[110px] rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         />
 
         <input
@@ -298,50 +310,50 @@ export default function AdminPanel() {
           value={form.location || ''}
           onChange={handleChange}
           placeholder="Location"
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         />
 
-        <label className="text-sm text-gray-600">Upload images</label>
+        <label className="text-sm tracking-[0.14em] uppercase text-[var(--lux-text-soft)]">Upload images</label>
         <input
           type="file"
           accept="image/*"
           multiple
           onChange={handleImageUpload}
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)]"
         />
 
-        <div className="rounded border p-2">
-          <p className="mb-2 text-xs text-gray-600">
+        <div className="rounded-2xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/70 p-4">
+          <p className="mb-2 text-xs text-[var(--lux-text-soft)]">
             Paste multiple image URLs separated by commas or new lines.
           </p>
           <textarea
             value={imageUrlInput}
             onChange={(e) => setImageUrlInput(e.target.value)}
             placeholder="https://.../image1.jpg, https://.../image2.jpg"
-            className="mb-2 min-h-[80px] w-full border p-2"
+            className="mb-3 min-h-[96px] w-full rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
           />
           <button
             type="button"
             onClick={handleAddImageUrls}
-            className="rounded-full border border-[#D4AF37]/40 px-3 py-1 text-xs font-medium text-[#7A5D1E]"
+            className="rounded-full border border-[var(--lux-border)] bg-[var(--lux-bronze)]/18 px-4 py-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--lux-text)] transition hover:bg-[var(--lux-bronze)]/28"
           >
             Add Image URLs
           </button>
         </div>
 
         {(form.images || []).length > 0 && (
-          <div className="rounded border p-2">
-            <p className="mb-2 text-xs text-gray-600">
+          <div className="rounded-2xl border border-[var(--lux-border)] bg-[var(--lux-surface)]/70 p-4">
+            <p className="mb-2 text-xs text-[var(--lux-text-soft)]">
               Added images ({form.images?.length || 0})
             </p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {(form.images || []).map((img, idx) => (
-                <div key={`${img}-${idx}`} className="relative overflow-hidden rounded border">
+                <div key={`${img}-${idx}`} className="relative overflow-hidden rounded-xl border border-[var(--lux-border)]">
                   <img src={img} alt={`admin-preview-${idx + 1}`} className="h-24 w-full object-cover" />
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(idx)}
-                    className="absolute right-1 top-1 rounded bg-black/70 px-2 py-1 text-xs text-white"
+                    className="absolute right-1 top-1 rounded-full bg-black/70 px-2 py-1 text-xs text-white"
                   >
                     x
                   </button>
@@ -356,17 +368,17 @@ export default function AdminPanel() {
           value={form.customizationNote || ''}
           onChange={handleChange}
           placeholder="Customization Note"
-          className="border p-2"
+          className="rounded-xl border border-[var(--lux-border)] bg-[var(--lux-bg-elevated)]/75 p-3 text-[var(--lux-text)] outline-none focus:border-[var(--lux-bronze)]"
         />
 
-        <button className="bg-black text-white p-2 disabled:opacity-60" disabled={loading}>
+        <button className="rounded-full bg-[var(--lux-bronze)] px-5 py-3 font-medium uppercase tracking-[0.16em] text-black disabled:opacity-60">
           {editingId ? 'Update' : 'Create'}
         </button>
       </form>
 
       {/* LIST */}
-      <div className="mt-8 space-y-2">
-        <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#8A6D2F]">
+      <div className="mt-8 space-y-3">
+        <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--lux-bronze)]">
           Drag cards to reorder gallery preview
         </p>
         {projects.map((p: any, index: number) => {
@@ -386,39 +398,40 @@ export default function AdminPanel() {
               setDragIndex(null);
             }}
             onDragEnd={() => setDragIndex(null)}
-            className="flex justify-between items-center p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition border border-[#D4AF37]/15"
+            className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center p-5 rounded-2xl bg-[var(--lux-surface)]/80 shadow-[var(--lux-shadow-soft)] hover:shadow-[var(--lux-shadow-card)] transition border border-[var(--lux-border)]"
           >
             <div>
-              <p className="mb-1 text-xs text-[#8A6D2F]">#{index + 1}</p>
-              <b>{p.title}</b>
-              <p className="text-sm">
+              <p className="mb-1 text-xs text-[var(--lux-bronze)]">#{index + 1}</p>
+              <b className="text-lg">{p.title}</b>
+              <p className="text-sm text-[var(--lux-text-soft)]">
                 {p.category} → {p.subCategory} → {p.subType}
               </p>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-[var(--lux-text-soft)]">
                 <span className="font-semibold">Location:</span> {p.location || 'Not set'}
               </p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                className="px-3 py-1 rounded-full text-sm bg-[#D4AF37]/20 text-[#7A5D1E] hover:scale-105 transition"
+                className="px-3 py-1 rounded-full text-sm bg-[var(--lux-bronze)]/20 text-[var(--lux-text)] hover:scale-105 transition"
                 onClick={() => moveProject(index, index - 1)}
               >
                 ↑
               </button>
               <button
                 type="button"
-                className="px-3 py-1 rounded-full text-sm bg-[#D4AF37]/20 text-[#7A5D1E] hover:scale-105 transition"
+                className="px-3 py-1 rounded-full text-sm bg-[var(--lux-bronze)]/20 text-[var(--lux-text)] hover:scale-105 transition"
                 onClick={() => moveProject(index, index + 1)}
               >
                 ↓
               </button>
-              <button className="px-3 py-1 rounded-full text-sm bg-black text-white hover:scale-105 transition" onClick={() => handleEdit(p)}>Edit</button>
+              <button className="px-3 py-1 rounded-full text-sm bg-[var(--lux-bg-elevated)] text-[var(--lux-text)] hover:scale-105 transition" onClick={() => handleEdit(p)}>Edit</button>
               <button className="px-3 py-1 rounded-full text-sm bg-red-500 text-white hover:scale-105 transition" onClick={() => handleDelete(projectId)}>Delete</button>
             </div>
           </div>
         )})}
+      </div>
       </div>
     </div>
   );

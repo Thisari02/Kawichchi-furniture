@@ -12,20 +12,20 @@ const IconMap: { [key: string]: any } = {
 
 const Craftsmanship: React.FC = () => {
   return (
-    <section id="craftsmanship" className="py-24 bg-white overflow-hidden">
+    <section id="craftsmanship" className="section-shell bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.h4 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="text-[#D4AF37] font-medium tracking-[0.4em] uppercase text-xs mb-4"
+            className="lux-tag mb-4"
           >
             Artistry in Motion
           </motion.h4>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-serif mb-6"
+            className="text-4xl md:text-5xl font-serif mb-6 text-[var(--lux-text)]"
           >
             Our Craftsmanship Process
           </motion.h2>
@@ -46,14 +46,14 @@ const Craftsmanship: React.FC = () => {
                 transition={{ delay: idx * 0.2 }}
                 className="group relative flex flex-col items-center px-8 text-center"
               >
-                <div className="relative mb-8 w-16 h-16 rounded-full bg-[#F5F1EA] flex items-center justify-center text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-all duration-500 z-10 border-4 border-white shadow-lg">
+                <div className="relative mb-8 w-16 h-16 rounded-full bg-[#1a1e25] flex items-center justify-center text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-all duration-500 z-10 border border-[var(--lux-border)] shadow-lg">
                   {Icon ? <Icon size={24} /> : null}
                   <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#2C2C2C] text-white text-[10px] flex items-center justify-center font-bold">
                     0{step.id}
                   </span>
                 </div>
                 
-                <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-sm shadow-md">
+                <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-[var(--lux-border)]">
                    <img 
                     src={step.image} 
                     alt={step.title}
@@ -61,8 +61,8 @@ const Craftsmanship: React.FC = () => {
                    />
                 </div>
 
-                <h3 className="text-xl font-serif mb-3 text-[#2C2C2C]">{step.title}</h3>
-                <p className="text-sm text-[#2C2C2C]/60 leading-relaxed font-light">
+                <h3 className="text-xl font-serif mb-3 text-[var(--lux-text)]">{step.title}</h3>
+                <p className="text-sm text-[var(--lux-text-soft)] leading-relaxed font-light">
                   {step.description}
                 </p>
               </motion.div>

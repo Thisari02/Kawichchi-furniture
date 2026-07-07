@@ -5,14 +5,14 @@ import { VIDEO_SHOWCASE } from '../constants';
 
 const VideoShowcase: React.FC = () => {
   return (
-    <section id="showcase" className="py-24 bg-[#2C2C2C] text-white">
+    <section id="showcase" className="section-shell bg-transparent text-[var(--lux-text)]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="text-left">
-            <h4 className="text-[#D4AF37] font-medium tracking-[0.4em] uppercase text-xs mb-4">Visual Stories</h4>
-            <h2 className="text-4xl md:text-5xl font-serif">Behind the Craft</h2>
+            <h4 className="lux-tag mb-4">Visual Stories</h4>
+            <h2 className="text-4xl md:text-5xl font-serif lux-section-title">Behind the Craft</h2>
           </div>
-          <p className="max-w-md text-white/50 text-sm leading-relaxed">
+          <p className="max-w-md text-[var(--lux-text-soft)] text-sm leading-relaxed">
             Witness the transformation of raw timber into timeless elegance. Explore our workshop journeys and client reveals.
           </p>
         </div>
@@ -27,14 +27,15 @@ const VideoShowcase: React.FC = () => {
               transition={{ delay: idx * 0.1 }}
               className="group relative cursor-pointer"
             >
-              <div className="relative aspect-video overflow-hidden rounded-sm shadow-2xl">
+              <div className="relative aspect-video overflow-hidden rounded-2xl shadow-2xl border border-[var(--lux-border)]">
                 <img 
                   src={video.thumbnail} 
                   alt={video.title}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-40"
                 />
                 
-                <span className="absolute top-4 left-4 bg-[#D4AF37] text-black text-[10px] uppercase tracking-widest px-3 py-1 font-bold z-20">
+                <span className="absolute top-4 left-4 bg-[var(--lux-bronze)] text-black text-[10px] uppercase tracking-widest px-3 py-1 font-bold z-20 rounded-full">
                   {video.tag}
                 </span>
 
@@ -47,7 +48,7 @@ const VideoShowcase: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 
                 <div className="absolute bottom-6 left-6 right-6">
-                  <h3 className="text-lg font-serif group-hover:text-[#D4AF37] transition-colors">{video.title}</h3>
+                  <h3 className="text-lg font-serif text-[var(--lux-text)] group-hover:text-[#D4AF37] transition-colors">{video.title}</h3>
                 </div>
               </div>
             </motion.div>

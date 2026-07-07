@@ -34,7 +34,7 @@ const Counter: React.FC<{ value: number; suffix: string; label: string }> = ({ v
       <div className="text-3xl md:text-4xl font-serif font-bold text-[#D4AF37]">
         {count.toLocaleString()}{suffix}
       </div>
-      <div className="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mt-1">
+      <div className="text-xs uppercase tracking-widest text-[var(--lux-text-soft)] mt-1">
         {label}
       </div>
     </div>
@@ -52,7 +52,7 @@ const About: React.FC = () => {
   const imageY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
 
   return (
-    <section id="about" ref={containerRef} className="py-24 md:py-32 px-6 bg-[#F5F1EA] overflow-hidden">
+    <section id="about" ref={containerRef} className="section-shell px-6 bg-transparent overflow-hidden relative">
       <div className="max-w-7xl mx-auto relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-12 items-center">
           
@@ -82,17 +82,17 @@ const About: React.FC = () => {
             transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 lg:-ml-20 mt-[-40px] lg:mt-32 z-10 relative"
           >
-            <div className="bg-white p-8 md:p-16 shadow-2xl rounded-sm border border-[#F5F1EA]">
-              <h4 className="text-[#D4AF37] font-medium tracking-[0.4em] uppercase text-xs mb-6">Our Heritage</h4>
-              <h2 className="text-4xl md:text-6xl font-serif mb-8 leading-tight">About Kawichchi</h2>
-              <p className="italic text-xl text-[#2C2C2C]/70 mb-10 font-serif leading-relaxed">
+            <div className="lux-card p-8 md:p-16 shadow-2xl rounded-2xl border border-[var(--lux-border)]">
+              <h4 className="lux-tag mb-6">Our Heritage</h4>
+              <h2 className="text-4xl md:text-6xl font-serif mb-8 leading-tight text-[var(--lux-text)]">About Kawichchi</h2>
+              <p className="italic text-xl text-[var(--lux-text-soft)] mb-10 font-serif leading-relaxed">
                 "We don't just build furniture; we curate the soul of your living space."
               </p>
-              <p className="text-[#2C2C2C]/80 leading-relaxed mb-12 text-lg">
+              <p className="text-[var(--lux-text-soft)] leading-relaxed mb-12 text-lg">
                 Born in the heart of Sri Lanka, Kawichchi represents the pinnacle of bespoke craftsmanship. Every piece is an intersection of traditional woodcarving techniques and contemporary design philosophies. We source the finest sustainably harvested timber to ensure that each creation is a legacy piece.
               </p>
               
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pt-10 border-t border-[#F5F1EA]">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pt-10 border-t border-white/10">
                 {STATS.map((stat, idx) => (
                   <Counter key={idx} {...stat} />
                 ))}
