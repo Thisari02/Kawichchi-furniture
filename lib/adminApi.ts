@@ -1,7 +1,7 @@
 import type { Project } from '../types';
+import { getApiBase } from './apiBase';
 
-const configuredApiRoot = import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_URL || 'https://kawichchi-furniture.onrender.com';
-const API_BASE = configuredApiRoot ? `${configuredApiRoot.replace(/\/$/, '')}/api/admin` : '/api/admin';
+const API_BASE = getApiBase('/api/admin');
 
 export async function createProject(project: Project): Promise<Project> {
   const response = await fetch(`${API_BASE}/projects`, {

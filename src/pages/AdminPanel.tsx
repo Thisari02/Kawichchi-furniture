@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { categories } from '../data/categories';
 import type { Project } from '../types/project';
+import { getApiBase } from '../../lib/apiBase';
 
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  'https://kawichchi-furniture.onrender.com';
+const API_BASE = getApiBase('/api');
 
 const initialForm: Project = {
   id: undefined,

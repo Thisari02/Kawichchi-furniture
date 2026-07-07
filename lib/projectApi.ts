@@ -1,9 +1,7 @@
 import type { Project } from '../types';
+import { getApiBase } from './apiBase';
 
 const PROJECTS_FALLBACK: Project[] = [];
-
-const configuredApiRoot = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:4000' : 'https://kawichchi-furniture.onrender.com');
-const API_BASE = configuredApiRoot ? `${configuredApiRoot.replace(/\/$/, '')}/api` : '/api';
 
 function normalizeProject(project: any): Project {
   const images = Array.isArray(project?.images) ? project.images : [];
@@ -24,7 +22,7 @@ function normalizeProject(project: any): Project {
 
 export async function fetchProjects(): Promise<Project[]> {
   try {
-    const response = await fetch(`${API_BASE}/projects`);
+    const response = await fetch(`${getApiBase('/api')}/projects`);
     if (!response.ok) {
       throw new Error(`Projects API returned ${response.status}`);
     }
@@ -38,7 +36,7 @@ export async function fetchProjects(): Promise<Project[]> {
 
 export async function fetchProjectById(id: String): Promise<Project | null> {
   try {
-    const response = await fetch(`${API_BASE}/projects/${id}`);
+    const response = await fetch(`${getApiBase('/api')}/projects/${id}`);
     if (!response.ok) {
       throw new Error(`Project API returned ${response.status}`);
     }
